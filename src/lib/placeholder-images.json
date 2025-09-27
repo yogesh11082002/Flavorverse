@@ -1,3 +1,100 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "dish-1",
+      "description": "Spaghetti Bolognese",
+      "imageUrl": "https://images.unsplash.com/photo-1635264685671-739e75e73e0f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwYXN0YSUyMHNwYWdoZXR0aXxlbnwwfHx8fDE3NTg5Njc3NTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pasta spaghetti"
+    },
+    {
+      "id": "dish-2",
+      "description": "Chicken Curry",
+      "imageUrl": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjaGlja2VuJTIwY3Vycnl8ZW58MHx8fHwxNzU4OTI5NzcyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "chicken curry"
+    },
+    {
+      "id": "dish-3",
+      "description": "Vegan Burger",
+      "imageUrl": "https://images.unsplash.com/photo-1520072959219-c595dc870360?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx2ZWdhbiUyMGJ1cmdlcnxlbnwwfHx8fDE3NTg5MTQ3MDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "vegan burger"
+    },
+    {
+      "id": "dish-4",
+      "description": "Chocolate Cake",
+      "imageUrl": "https://images.unsplash.com/photo-1517427294546-5aa121f68e8a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjaG9jb2xhdGUlMjBjYWtlfGVufDB8fHx8MTc1ODkwMjgyN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "chocolate cake"
+    },
+    {
+      "id": "dish-5",
+      "description": "Avocado Toast",
+      "imageUrl": "https://images.unsplash.com/photo-1588137378633-dea1336ce1e2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhdm9jYWRvJTIwdG9hc3R8ZW58MHx8fHwxNzU4OTI1NTIxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "avocado toast"
+    },
+    {
+      "id": "dish-6",
+      "description": "Sushi Platter",
+      "imageUrl": "https://images.unsplash.com/photo-1663334038419-71e6f82e333f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzdXNoaSUyMHBsYXR0ZXJ8ZW58MHx8fHwxNzU4ODg4MjI2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sushi platter"
+    },
+    {
+      "id": "dish-7",
+      "description": "Pancakes with Berries",
+      "imageUrl": "https://images.unsplash.com/photo-1522248105696-9625ba87de6e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwYW5jYWtlcyUyMGJlcnJpZXN8ZW58MHx8fHwxNzU4ODcxNzczfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pancakes berries"
+    },
+    {
+      "id": "dish-8",
+      "description": "Margherita Pizza",
+      "imageUrl": "https://images.unsplash.com/photo-1564936281291-294551497d81?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtYXJnaGVyaXRhJTIwcGl6emF8ZW58MHx8fHwxNzU4OTI4MTM1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "margherita pizza"
+    },
+    {
+      "id": "dish-9",
+      "description": "Ramen Noodle Soup",
+      "imageUrl": "https://images.unsplash.com/photo-1637024698421-533d83c7b883?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxyYW1lbiUyMHNvdXB8ZW58MHx8fHwxNzU4ODg3NTQ1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ramen soup"
+    },
+    {
+      "id": "dish-10",
+      "description": "Fresh Garden Salad",
+      "imageUrl": "https://images.unsplash.com/photo-1644172949364-3fcfd25604b8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxnYXJkZW4lMjBzYWxhZHxlbnwwfHx8fDE3NTg5MTQwNTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "garden salad"
+    },
+    {
+      "id": "dish-11",
+      "description": "Tacos al Pastor",
+      "imageUrl": "https://images.unsplash.com/photo-1596995804697-27d11d43652e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0YWNvcyUyMHBhc3RvcnxlbnwwfHx8fDE3NTg4ODMxNjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "tacos pastor"
+    },
+    {
+      "id": "dish-12",
+      "description": "Blueberry Muffins",
+      "imageUrl": "https://images.unsplash.com/photo-1633103026418-ec77216f077d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Ymx1ZWJlcnJ5JTIwbXVmZmluc3xlbnwwfHx8fDE3NTg5Njc3NTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "blueberry muffins"
+    },
+    {
+      "id": "author-1",
+      "description": "Jane Doe",
+      "imageUrl": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1ODg2Nzc5Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "author-2",
+      "description": "John Smith",
+      "imageUrl": "https://images.unsplash.com/photo-1624395213043-fa2e123b2656?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTg5NTE1NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "author-3",
+      "description": "Emily White",
+      "imageUrl": "https://images.unsplash.com/photo-1656338997878-279d71d48f6e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwZXJzb24lMjBzbWlsaW5nfGVufDB8fHx8MTc1ODkwMDczMHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person smiling"
+    },
+    {
+      "id": "author-4",
+      "description": "Michael Brown",
+      "imageUrl": "https://images.unsplash.com/photo-1654348651888-ef2f0a04a7bc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bWFuJTIwZ2xhc3Nlc3xlbnwwfHx8fDE3NTg5MjUwODF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man glasses"
+    }
+  ]
 }
