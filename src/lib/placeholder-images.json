@@ -99,7 +99,7 @@
     {
       "id": "brand-dominos",
       "description": "Dominos Pizza Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkb21pbm9zJTIwcGl6emF8ZW58MHx8fHwxNzU4OTY5MDE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1719463814257-044d4fee9a5f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxkb21pbm9zJTIwcGl6emF8ZW58MHx8fHwxNzU4OTY5MDE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "dominos pizza"
     },
     {
@@ -111,37 +111,37 @@
     {
       "id": "brand-fanta",
       "description": "Fanta Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1595774987107-9c308bef551f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmYW50YSUyMGxvZ298ZW58MHx8fHwxNzU4OTY5MDE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1653499676737-becf2c9562c8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmYW50YSUyMGxvZ298ZW58MHx8fHwxNzU4OTY5MDE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "fanta logo"
     },
     {
       "id": "brand-carlsjr",
       "description": "Carl's Jr. Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1607958575561-586122ab10fb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjYXJscyUyMGpyfGVufDB8fHx8MTc1ODk2OTAxNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1584717738386-701e6c3473bc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjYXJscyUyMGpyfGVufDB8fHx8MTc1ODk2OTAxNXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "carls jr"
     },
     {
       "id": "brand-folgers",
       "description": "Folgers Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1580091435030-f13509780cc3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Zm9sZ2VycyUyMGNvZmZlZXxlbnwwfHx8fDE3NTg5NjkwMTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1549403610-177341eb0f67?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmb2xnZXJzJTIwY29mZmVlfGVufDB8fHx8MTc1ODk2OTAxNXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "folgers coffee"
     },
     {
       "id": "brand-fritos",
       "description": "Fritos Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1616662707741-9f32deea4863?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxmcml0b3MlMjBjaGlwc3xlbnwwfHx8fDE3NTg5NjkwMTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1647764430080-6000fbe7efee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmcml0b3MlMjBjaGlwc3xlbnwwfHx8fDE3NTg5NjkwMTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "fritos chips"
     },
     {
       "id": "brand-hardees",
       "description": "Hardee's Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1701534979355-7c03953df1bd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxoYXJkZWVzJTIwbG9nb3xlbnwwfHx8fDE3NTg5NjkwMTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1750203926704-b0556d976978?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxoYXJkZWVzJTIwbG9nb3xlbnwwfHx8fDE3NTg5NjkwMTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "hardees logo"
     },
     {
       "id": "brand-kfc",
       "description": "KFC Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1606762988363-d039207ed63a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxrZmMlMjBjaGlja2VufGVufDB8fHx8MTc1ODk2OTAxNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1674495219251-8ea5477aa4da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxrZmMlMjBjaGlja2VufGVufDB8fHx8MTc1ODk2OTAxNXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "kfc chicken"
     },
     {
@@ -149,6 +149,96 @@
       "description": "Cartoon chef mascot",
       "imageUrl": "https://storage.googleapis.com/aifirebase-images/app-images/chef.png",
       "imageHint": "chef mascot"
+    },
+    {
+      "id": "promo-banner",
+      "description": "Pizza ingredients for promo banner",
+      "imageUrl": "https://images.unsplash.com/photo-1557682250-33bd709cbe85?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+      "imageHint": "pizza ingredients"
+    },
+    {
+      "id": "cat-deserts",
+      "description": "Desert category icon",
+      "imageUrl": "https://images.unsplash.com/photo-1495147466023-ac5c588e2e94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxkZXNzZXJ0fGVufDB8fHx8MTc1ODk1NjQ0NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dessert"
+    },
+    {
+      "id": "cat-cakes",
+      "description": "Cakes category icon",
+      "imageUrl": "https://images.unsplash.com/photo-1589361471339-16b852481424?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjYWtlJTIwc2xpY2V8ZW58MHx8fHwxNzU4ODkzNjQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cake slice"
+    },
+    {
+      "id": "cat-brownies",
+      "description": "Brownies category icon",
+      "imageUrl": "https://images.unsplash.com/photo-1636743715220-d8f8dd900b87?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxicm93bmllfGVufDB8fHx8MTc1ODk3MDY0MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "brownie"
+    },
+    {
+      "id": "cat-pizzas",
+      "description": "Pizzas category icon",
+      "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwaXp6YXxlbnwwfHx8fDE3NTg5NDMwMzV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pizza"
+    },
+    {
+      "id": "cat-burgers",
+      "description": "Burgers category icon",
+      "imageUrl": "https://images.unsplash.com/photo-1530554764233-e79e16c91d08?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxidXJnZXJ8ZW58MHx8fHwxNzU4OTQzMDM1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "burger"
+    },
+    {
+      "id": "cat-drinks",
+      "description": "Drinks category icon",
+      "imageUrl": "https://images.unsplash.com/photo-1587223962930-cb7f31384c19?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjb2NrdGFpbHxlbnwwfHx8fDE3NTg5MDQ5OTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cocktail"
+    },
+    {
+      "id": "cat-wrap",
+      "description": "Wrap category icon",
+      "imageUrl": "https://images.unsplash.com/photo-1705131187598-771f00b7712c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx3cmFwJTIwc2FuZHdpY2h8ZW58MHx8fHwxNzU4ODU5Mjc2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wrap sandwich"
+    },
+    {
+      "id": "cat-pasta",
+      "description": "Pasta category icon",
+      "imageUrl": "https://images.unsplash.com/photo-1654708460950-9cb4b0728f23?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwYXN0YSUyMGJvd2x8ZW58MHx8fHwxNzU4OTE4MDY2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pasta bowl"
+    },
+    {
+      "id": "cat-sandwich",
+      "description": "Sandwich category icon",
+      "imageUrl": "https://images.unsplash.com/photo-1553909489-cd47e0907980?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzYW5kd2ljaHxlbnwwfHx8fDE3NTg5Njc3ODN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sandwich"
+    },
+    {
+      "id": "cat-fruits",
+      "description": "Fruits category icon",
+      "imageUrl": "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxmcnVpdCUyMGJvd2x8ZW58MHx8fHwxNzU4OTcwNjQxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "fruit bowl"
+    },
+    {
+      "id": "collection-pizza",
+      "description": "Margarita pizza",
+      "imageUrl": "https://images.unsplash.com/photo-1641840360785-c720744aa905?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtYXJnYXJpdGElMjBwaXp6YXxlbnwwfHx8fDE3NTg5NzA2NDB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "margarita pizza"
+    },
+    {
+      "id": "collection-special-sandwich",
+      "description": "Special sandwich",
+      "imageUrl": "https://images.unsplash.com/photo-1691775755286-139f5ac07dde?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzcGVjaWFsJTIwc2FuZHdpY2h8ZW58MHx8fHwxNzU4OTcwNjQwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "special sandwich"
+    },
+    {
+      "id": "collection-burger",
+      "description": "Chicken burger",
+      "imageUrl": "https://images.unsplash.com/photo-1585238340764-c6f1f6fe1a6d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjaGlja2VuJTIwYnVyZ2VyfGVufDB8fHx8MTc1ODkyNTUyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "chicken burger"
+    },
+    {
+      "id": "collection-chicken-sandwich",
+      "description": "Chicken sandwich",
+      "imageUrl": "https://images.unsplash.com/photo-1613985216255-a26ecf1df4a2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjaGlja2VuJTIwc2FuZHdpY2h8ZW58MHx8fHwxNzU4OTcwNjQwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "chicken sandwich"
     }
   ]
 }

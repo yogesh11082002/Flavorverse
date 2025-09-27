@@ -39,6 +39,7 @@ const navLinks = [
     dropdownItems: [
         { href: "/upload", label: "Upload Dish" },
         { href: "/feed", label: "Browse Dishes" },
+        { href: "/collection", label: "Collection" },
     ] 
   },
   { href: "/about", label: "About" },
