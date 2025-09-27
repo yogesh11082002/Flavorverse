@@ -34,7 +34,7 @@ export default function DishCard({ dish }: DishCardProps) {
                 />
              </Link>
              <div className="absolute top-2 right-2 flex items-center gap-1">
-                <Badge variant="destructive">HOT</Badge>
+                {dish.category === 'Popular' && <Badge variant="destructive">HOT</Badge>}
                 <Badge variant="outline" className="bg-background/80 backdrop-blur-sm">
                     <Star className="h-3 w-3 fill-primary text-primary mr-1" />
                     <span className="font-bold">4.6</span>

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import Logo from "./logo";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
-import { Search, ShoppingBag, Menu, ChevronDown, Upload, User } from "lucide-react";
+import { Search, ShoppingBag, Menu, ChevronDown, User } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
@@ -30,7 +30,16 @@ const navLinks = [
     ]
   },
   { href: "#", label: "Brand", isNew: true },
-  { href: "/upload", label: "Upload", isHot: true },
+  { 
+    href: "/upload", 
+    label: "Shop", 
+    isHot: true, 
+    hasDropdown: true, 
+    dropdownItems: [
+        { href: "/upload", label: "Upload Dish" },
+        { href: "/feed", label: "Browse Dishes" },
+    ] 
+  },
   { href: "#", label: "Contact" },
 ];
 
@@ -48,7 +57,10 @@ function NavLinks({ isMobile, onLinkClick }: { isMobile?: boolean, onLinkClick?:
           return (
              <DropdownMenu key={link.href}>
               <DropdownMenuTrigger className={cn(linkClass, pathname.startsWith(link.href) ? "text-primary" : "text-muted-foreground", "outline-none")}>
-                {link.label} <ChevronDown className="h-4 w-4" />
+                {link.label} 
+                {link.isNew && <Badge variant="outline" className="ml-1 bg-blue-100 text-blue-600 border-blue-300 text-xs px-1.5 py-0.5 h-auto">NEW</Badge>}
+                {link.isHot && <Badge variant="destructive" className="ml-1 border-none text-xs px-1.5 py-0.5 h-auto">HOT</Badge>}
+                <ChevronDown className="h-4 w-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 {link.dropdownItems.map(item => (
@@ -70,8 +82,6 @@ function NavLinks({ isMobile, onLinkClick }: { isMobile?: boolean, onLinkClick?:
               )}
             >
               {link.label}
-              {link.isNew && <Badge variant="outline" className="ml-1 bg-blue-100 text-blue-600 border-blue-300 text-xs px-1.5 py-0.5 h-auto">NEW</Badge>}
-              {link.isHot && <Badge variant="destructive" className="ml-1 border-none text-xs px-1.5 py-0.5 h-auto">HOT</Badge>}
             </Link>
           </div>
         )
@@ -94,11 +104,6 @@ export default function Header() {
         <div className="ml-auto flex items-center gap-2 sm:gap-4">
           <Button variant="ghost" size="icon" className="hidden sm:inline-flex">
             <Search className="h-5 w-5" />
-          </Button>
-          <Button asChild variant="ghost" size="icon" className="hidden sm:inline-flex">
-            <Link href="/upload">
-              <Upload className="h-5 w-5" />
-            </Link>
           </Button>
            <Button variant="ghost" size="icon" className="hidden sm:inline-flex">
             <ShoppingBag className="h-5 w-5" />
