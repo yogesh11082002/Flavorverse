@@ -22,7 +22,7 @@ export default function DishCard({ dish }: DishCardProps) {
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className="h-full"
     >
-      <Card className="overflow-hidden h-full flex flex-col group border-2 hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl">
+      <Card className="overflow-hidden h-full flex flex-col group border hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl">
           <div className="relative aspect-video overflow-hidden">
              <Link href={`/dish/${dish.id}`} className="block w-full h-full">
                 <Image

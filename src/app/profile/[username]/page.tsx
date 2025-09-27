@@ -27,7 +27,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
     <div className="container mx-auto px-4 py-12">
       <Card className="mb-12 p-8">
         <div className="flex flex-col items-center text-center md:flex-row md:items-start md:text-left gap-8">
-          <Avatar className="h-24 w-24 md:h-32 md:w-32 border-4 border-primary">
+          <Avatar className="h-24 w-24 md:h-32 md:w-32 border-4 border-primary shrink-0">
             {userImage && <AvatarImage src={userImage.imageUrl} alt={user.name} data-ai-hint="person face" />}
             <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
           </Avatar>

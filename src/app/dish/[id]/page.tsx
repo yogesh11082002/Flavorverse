@@ -4,7 +4,7 @@ import { dishes } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Heart, MessageSquare, Send } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import Link from 'next/link';
@@ -25,20 +25,19 @@ export default function DishDetailPage({ params }: { params: { id: string } }) {
   const authorUsername = dish.author.toLowerCase().replace(' ', '');
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-12">
-      <Card>
-        <div className="grid md:grid-cols-2 gap-8">
-          <div>
+    <div className="container mx-auto max-w-5xl px-4 py-12">
+      <Card className="overflow-hidden">
+        <div className="grid md:grid-cols-2">
+          <div className="relative aspect-square md:aspect-auto">
             <Image
               src={dish.image.imageUrl}
               alt={dish.name}
-              width={800}
-              height={600}
-              className="w-full rounded-t-lg md:rounded-l-lg md:rounded-t-none object-cover aspect-square"
+              fill
+              className="object-cover"
               data-ai-hint={dish.image.imageHint}
             />
           </div>
-          <div className="flex flex-col p-6">
+          <div className="flex flex-col p-6 md:p-8">
             <div className="flex items-center gap-3 mb-4">
                <Link href={`/profile/${authorUsername}`} className="flex items-center gap-3 group">
                 <Avatar>
@@ -64,9 +63,9 @@ export default function DishDetailPage({ params }: { params: { id: string } }) {
             
             <Separator className="my-6" />
 
-            <div>
+            <div className="flex-grow flex flex-col">
               <h2 className="text-xl font-bold font-headline mb-4">Comments</h2>
-              <div className="space-y-4">
+              <div className="space-y-4 flex-grow">
                 {/* Placeholder for comments */}
                 <div className="text-sm text-muted-foreground">No comments yet.</div>
               </div>

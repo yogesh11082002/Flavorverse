@@ -42,8 +42,8 @@ export default function FeedPage() {
         </p>
       </div>
       
-      <div className="mb-8 flex flex-col md:flex-row items-center gap-4">
-        <div className="relative w-full md:flex-grow">
+      <div className="mb-8 flex flex-col md:flex-row items-center justify-center gap-4">
+        <div className="relative w-full max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input 
             placeholder="Search by name or ingredient..."
@@ -52,7 +52,7 @@ export default function FeedPage() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap justify-center">
           {(["All", "Trending", "Latest", "Popular"] as Filter[]).map(filter => (
              <Button 
                 key={filter} 
