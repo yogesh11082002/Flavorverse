@@ -10,6 +10,8 @@ import { PopularDishes } from "@/components/landing/popular-dishes";
 import { TopCategories } from "@/components/collection/top-categories";
 import { NewProducts } from "@/components/collection/new-products";
 import { PromoBanner } from "@/components/collection/promo-banner";
+import { Testimonials } from "@/components/landing/testimonials";
+import { FeaturesBanner } from "@/components/landing/features-banner";
 
 
 export default function Home() {
@@ -34,6 +36,8 @@ export default function Home() {
       <CategoryGrid />
       <DiscountedGoods />
       <AboutUsSection />
+      <Testimonials />
+      <FeaturesBanner />
     </div>
   );
 }
