@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import Logo from "./logo";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
-import { Search, ShoppingBag, Menu, ChevronDown } from "lucide-react";
+import { Search, ShoppingBag, Menu, ChevronDown, Upload, User } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
@@ -18,9 +18,19 @@ import {
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/feed", label: "Menu", hasDropdown: true },
+  { 
+    href: "/feed", 
+    label: "Menu", 
+    hasDropdown: true, 
+    dropdownItems: [
+      { href: "/feed", label: "All Dishes" },
+      { href: "/feed?filter=Trending", label: "Trending" },
+      { href: "/feed?filter=Popular", label: "Popular" },
+      { href: "/feed?filter=Latest", label: "Latest" },
+    ]
+  },
   { href: "#", label: "Brand", isNew: true },
-  { href: "#", label: "Shop", isHot: true },
+  { href: "/upload", label: "Upload", isHot: true },
   { href: "#", label: "Contact" },
 ];
 
@@ -34,16 +44,16 @@ function NavLinks({ isMobile, onLinkClick }: { isMobile?: boolean, onLinkClick?:
   return (
     <>
       {navLinks.map((link) => {
-        if (link.hasDropdown) {
+        if (link.hasDropdown && link.dropdownItems) {
           return (
              <DropdownMenu key={link.href}>
               <DropdownMenuTrigger className={cn(linkClass, pathname.startsWith(link.href) ? "text-primary" : "text-muted-foreground", "outline-none")}>
                 {link.label} <ChevronDown className="h-4 w-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem asChild><Link href="/feed">All Dishes</Link></DropdownMenuItem>
-                <DropdownMenuItem asChild><Link href="#">Trending</Link></DropdownMenuItem>
-                <DropdownMenuItem asChild><Link href="#">Popular</Link></DropdownMenuItem>
+                {link.dropdownItems.map(item => (
+                  <DropdownMenuItem key={item.href} asChild><Link href={item.href} onClick={onLinkClick}>{item.label}</Link></DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
           )
@@ -85,10 +95,28 @@ export default function Header() {
           <Button variant="ghost" size="icon" className="hidden sm:inline-flex">
             <Search className="h-5 w-5" />
           </Button>
+          <Button asChild variant="ghost" size="icon" className="hidden sm:inline-flex">
+            <Link href="/upload">
+              <Upload className="h-5 w-5" />
+            </Link>
+          </Button>
            <Button variant="ghost" size="icon" className="hidden sm:inline-flex">
             <ShoppingBag className="h-5 w-5" />
           </Button>
-          <Button className="font-bold rounded-lg px-6 hidden sm:inline-flex bg-blue-500 hover:bg-blue-600 text-white">Login</Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="font-bold rounded-lg px-6 hidden sm:inline-flex bg-blue-500 hover:bg-blue-600 text-white">
+                <User className="h-4 w-4 mr-2"/>
+                Login
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem asChild><Link href="/profile/user">My Profile</Link></DropdownMenuItem>
+              <DropdownMenuItem>Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
@@ -111,7 +139,12 @@ export default function Header() {
                       <ShoppingBag className="h-5 w-5 mr-2" />
                       Cart
                     </Button>
-                    <Button className="font-bold rounded-lg w-full bg-blue-500 hover:bg-blue-600 text-white">Login</Button>
+                    <Button asChild className="font-bold rounded-lg w-full bg-blue-500 hover:bg-blue-600 text-white">
+                        <Link href="/profile/user" onClick={() => setIsSheetOpen(false)}>
+                            <User className="h-4 w-4 mr-2"/>
+                            My Profile
+                        </Link>
+                    </Button>
                   </div>
               </div>
             </SheetContent>

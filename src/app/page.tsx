@@ -103,15 +103,15 @@ function HeroSection() {
 
 function PopularBrands() {
   const brands = [
-    { name: 'Dominos', logo: 'https://picsum.photos/seed/dominos/100/50' },
-    { name: 'Pizza Hut', logo: 'https://picsum.photos/seed/pizzahut/100/50' },
-    { name: 'Fanta', logo: 'https://picsum.photos/seed/fanta/100/50' },
-    { name: 'Carls Jr', logo: 'https://picsum.photos/seed/carlsjr/100/50' },
-    { name: 'Folgers', logo: 'https://picsum.photos/seed/folgers/100/50' },
-    { name: 'Fritos', logo: 'https://picsum.photos/seed/fritos/100/50' },
-    { name: 'Hardees', logo: 'https://picsum.photos/seed/hardees/100/50' },
-    { name: 'KFC', logo: 'https://picsum.photos/seed/kfc/100/50' },
-  ]
+    { name: 'Dominos', logo: PlaceHolderImages.find(p => p.id === 'brand-dominos') },
+    { name: 'Pizza Hut', logo: PlaceHolderImages.find(p => p.id === 'brand-pizzahut') },
+    { name: 'Fanta', logo: PlaceHolderImages.find(p => p.id === 'brand-fanta') },
+    { name: 'Carls Jr', logo: PlaceHolderImages.find(p => p.id === 'brand-carlsjr') },
+    { name: 'Folgers', logo: PlaceHolderImages.find(p => p.id === 'brand-folgers') },
+    { name: 'Fritos', logo: PlaceHolderImages.find(p => p.id === 'brand-fritos') },
+    { name: 'Hardees', logo: PlaceHolderImages.find(p => p.id === 'brand-hardees') },
+    { name: 'KFC', logo: PlaceHolderImages.find(p => p.id === 'brand-kfc') },
+  ];
   return (
     <section className="w-full py-12">
       <div className="container mx-auto px-4 lg:px-8">
@@ -120,8 +120,8 @@ function PopularBrands() {
         </h2>
         <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8">
           {brands.map(brand => (
-            <div key={brand.name} className="p-4 bg-card rounded-lg shadow-md border">
-              <Image src={brand.logo} alt={brand.name} width={100} height={50} className="object-contain" data-ai-hint={`${brand.name} logo`} />
+            brand.logo && <div key={brand.name} className="p-4 bg-card rounded-lg shadow-md border">
+              <Image src={brand.logo.imageUrl} alt={brand.name} width={100} height={50} className="object-contain" data-ai-hint={`${brand.name} logo`} />
             </div>
           ))}
         </div>
@@ -151,9 +151,11 @@ function CategoryGrid() {
             {cat.image && <Image src={cat.image.imageUrl} alt={cat.title} fill className="object-cover object-center absolute inset-0 z-0 opacity-20" data-ai-hint={cat.hint} />}
             <div className="relative z-10">
               <h3 className="font-headline text-3xl font-bold">{cat.title}</h3>
-              <Button variant="link" className="p-0 h-auto text-white font-bold mt-4 flex items-center gap-2">
-                Order Now <ArrowRight className="w-4 h-4" />
-              </Button>
+               <Link href="/feed">
+                <Button variant="link" className="p-0 h-auto text-white font-bold mt-4 flex items-center gap-2">
+                  Order Now <ArrowRight className="w-4 h-4" />
+                </Button>
+              </Link>
             </div>
           </motion.div>
         ))}
@@ -200,7 +202,7 @@ function AboutUsSection() {
     return (
         <section className="container mx-auto px-4 lg:px-8 py-12">
             <div className="flex items-center mb-8">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-foreground mr-3"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2_ 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-foreground mr-3"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                     Little Bite About Us
                 </h2>

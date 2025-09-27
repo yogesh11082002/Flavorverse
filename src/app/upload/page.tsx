@@ -1,6 +1,7 @@
 "use client";
 
-import { useFormState, useForm } from "react-hook-form";
+import { useFormState } from "react-dom";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { uploadDishAction } from "@/lib/actions";
@@ -10,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Upload, Loader2 } from "lucide-react";
 
 const DishSchema = z.object({
@@ -33,7 +34,7 @@ function SubmitButton() {
     )
 }
 
-// Custom hook for useFormStatus
+// Custom hook for useFormStatus since it's only available in Next.js 14 canary
 function useFormStatus() {
     const [pending, setPending] = React.useState(false);
     const formRef = React.useRef<HTMLFormElement>(null);
@@ -41,21 +42,30 @@ function useFormStatus() {
     React.useEffect(() => {
         const form = formRef.current?.closest('form');
         if (form) {
-            const handleStart = () => setPending(true);
-            const handleFinish = () => setPending(false);
+            const handleStart = (event: Event) => {
+                const formData = new FormData(event.currentTarget as HTMLFormElement);
+                const action = (event.currentTarget as HTMLFormElement).action;
+                
+                // A simple check to see if we should enter a pending state.
+                // In a real app, you might want to be more specific.
+                if (action) {
+                    setPending(true);
+                }
+            };
+            
+            const handleFinish = () => {
+                setPending(false);
+            };
 
             form.addEventListener('submit', handleStart);
-            // This is a simplification; a real app might need a more robust way
-            // to detect when the form submission is complete.
-            const observer = new MutationObserver((mutations) => {
-                // Heuristic: if form is no longer submitting, set pending to false
-                if(!form.hasAttribute('data-submitting')) {
+
+            const observer = new MutationObserver(() => {
+                if (document.body.getAttribute('data-form-state') !== 'submitting') {
                     handleFinish();
                 }
             });
-
-            observer.observe(form, { attributes: true });
-
+            
+            observer.observe(document.body, { attributes: true, attributeFilter: ['data-form-state'] });
 
             return () => {
                 form.removeEventListener('submit', handleStart);
@@ -97,10 +107,18 @@ export default function UploadPage() {
           description: state.message,
         });
         form.reset();
-        formRef.current?.reset();
+        if (formRef.current) {
+          formRef.current.reset();
+        }
       }
+      document.body.removeAttribute('data-form-state');
     }
   }, [state, toast, form]);
+
+  const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    document.body.setAttribute('data-form-state', 'submitting');
+    // The form action will be invoked by the browser.
+  };
 
   return (
     <div className="container mx-auto max-w-2xl px-4 py-12">
@@ -111,7 +129,12 @@ export default function UploadPage() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form ref={formRef} action={formAction} className="space-y-6">
+            <form 
+              ref={formRef} 
+              action={formAction} 
+              onSubmit={onFormSubmit}
+              className="space-y-6"
+            >
               <FormField
                 control={form.control}
                 name="name"
@@ -143,7 +166,7 @@ export default function UploadPage() {
               <FormField
                 control={form.control}
                 name="image"
-                render={({ field }) => (
+                render={({ field: { onChange, value, ...rest } }) => (
                   <FormItem>
                     <FormLabel>Dish Image</FormLabel>
                     <FormControl>
@@ -152,13 +175,20 @@ export default function UploadPage() {
                             <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                 <Upload className="w-8 h-8 mb-4 text-muted-foreground" />
                                 <p className="mb-2 text-sm text-muted-foreground"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                                <p className="text-xs text-muted-foreground">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                                <p className="text-xs text-muted-foreground">PNG, JPG, GIF up to 10MB</p>
                             </div>
-                            <Input id="dropzone-file" type="file" className="hidden" accept="image/*" onChange={(e) => field.onChange(e.target.files)} />
+                            <Input 
+                              id="dropzone-file" 
+                              type="file" 
+                              className="hidden" 
+                              accept="image/*"
+                              {...rest}
+                              onChange={(e) => onChange(e.target.files)} 
+                            />
                         </label>
                       </div> 
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage>{state.errors?.image as unknown as string}</FormMessage>
                   </FormItem>
                 )}
               />

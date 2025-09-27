@@ -4,9 +4,10 @@ import { dishes } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Heart, MessageSquare, Send } from 'lucide-react';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
+import Link from 'next/link';
 
 export function generateStaticParams() {
   return dishes.map((dish) => ({
@@ -20,6 +21,8 @@ export default function DishDetailPage({ params }: { params: { id: string } }) {
   if (!dish) {
     notFound();
   }
+
+  const authorUsername = dish.author.toLowerCase().replace(' ', '');
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-12">
@@ -37,11 +40,13 @@ export default function DishDetailPage({ params }: { params: { id: string } }) {
           </div>
           <div className="flex flex-col p-6">
             <div className="flex items-center gap-3 mb-4">
-              <Avatar>
-                <AvatarImage src={dish.authorImage.imageUrl} alt={dish.author} data-ai-hint={dish.authorImage.imageHint} />
-                <AvatarFallback>{dish.author.charAt(0)}</AvatarFallback>
-              </Avatar>
-              <span className="font-semibold">{dish.author}</span>
+               <Link href={`/profile/${authorUsername}`} className="flex items-center gap-3 group">
+                <Avatar>
+                  <AvatarImage src={dish.authorImage.imageUrl} alt={dish.author} data-ai-hint={dish.authorImage.imageHint} />
+                  <AvatarFallback>{dish.author.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <span className="font-semibold group-hover:text-primary transition-colors">{dish.author}</span>
+              </Link>
             </div>
             <h1 className="font-headline text-3xl md:text-4xl font-bold mb-4">{dish.name}</h1>
             <p className="text-muted-foreground mb-6 flex-grow">{dish.description}</p>

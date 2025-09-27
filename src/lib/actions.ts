@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 const DishSchema = z.object({
   name: z.string().min(3, { message: "Dish name must be at least 3 characters." }),
   description: z.string().min(10, { message: "Description must be at least 10 characters." }),
+  image: z.any().refine(files => files?.length === 1, "Image is required."),
 });
 
 export type FormState = {
@@ -13,6 +14,7 @@ export type FormState = {
   errors?: {
     name?: string[];
     description?: string[];
+    image?: string[];
   };
 };
 
@@ -24,6 +26,7 @@ export async function uploadDishAction(
   const validatedFields = DishSchema.safeParse({
     name: formData.get("name"),
     description: formData.get("description"),
+    image: formData.get("image"),
   });
   
   // Artificial delay to simulate network latency
@@ -36,9 +39,13 @@ export async function uploadDishAction(
     };
   }
 
-  // Here you would typically handle file upload to a service like Cloudinary/ImageKit
-  // and then save the data (including image URL) to your database via Prisma.
-  console.log("New dish submitted:", validatedFields.data);
+  // Here you would typically handle file upload to a service like S3 or Cloudinary
+  // and then save the data (including image URL) to your database.
+  console.log("New dish submitted:", {
+    name: validatedFields.data.name,
+    description: validatedFields.data.description,
+    image: validatedFields.data.image.name,
+  });
   
   // Revalidate the feed page to show the new dish
   revalidatePath("/feed");
