@@ -99,7 +99,7 @@
     {
       "id": "brand-dominos",
       "description": "Dominos Pizza Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1544067963-8a045010edcd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkb21pbm9zJTIwcGl6emF8ZW58MHx8fHwxNzU4OTY5MDE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkb21pbm9zJTIwcGl6emF8ZW58MHx8fHwxNzU4OTY5MDE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "dominos pizza"
     },
     {
@@ -111,38 +111,44 @@
     {
       "id": "brand-fanta",
       "description": "Fanta Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1653499676737-becf2c9562c8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmYW50YSUyMGxvZ298ZW58MHx8fHwxNzU4OTY5MDE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1595774987107-9c308bef551f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmYW50YSUyMGxvZ298ZW58MHx8fHwxNzU4OTY5MDE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "fanta logo"
     },
     {
       "id": "brand-carlsjr",
       "description": "Carl's Jr. Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1615826134382-f1825312f0e4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjYXJscyUyMGpyfGVufDB8fHx8MTc1ODk2OTAxNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1607958575561-586122ab10fb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjYXJscyUyMGpyfGVufDB8fHx8MTc1ODk2OTAxNXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "carls jr"
     },
     {
       "id": "brand-folgers",
       "description": "Folgers Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1575221731327-2a7644e9b9f9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxmb2xnZXJzJTIwY29mZmVlfGVufDB8fHx8MTc1ODk2OTAxNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1580091435030-f13509780cc3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Zm9sZ2VycyUyMGNvZmZlZXxlbnwwfHx8fDE3NTg5NjkwMTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "folgers coffee"
     },
     {
       "id": "brand-fritos",
       "description": "Fritos Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1599975744981-48d63c8f38af?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxmcml0b3MlMjBjaGlwc3xlbnwwfHx8fDE3NTg5NjkwMTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1616662707741-9f32deea4863?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxmcml0b3MlMjBjaGlwc3xlbnwwfHx8fDE3NTg5NjkwMTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "fritos chips"
     },
     {
       "id": "brand-hardees",
       "description": "Hardee's Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1739055547874-4fe440a2bfea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxoYXJkZWVzJTIwbG9nb3xlbnwwfHx8fDE3NTg5NjkwMTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1701534979355-7c03953df1bd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxoYXJkZWVzJTIwbG9nb3xlbnwwfHx8fDE3NTg5NjkwMTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "hardees logo"
     },
     {
       "id": "brand-kfc",
       "description": "KFC Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1689928600118-f6c3f57f4f45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxrZmMlMjBjaGlja2VufGVufDB8fHx8MTc1ODk2OTAxNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1606762988363-d039207ed63a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxrZmMlMjBjaGlja2VufGVufDB8fHx8MTc1ODk2OTAxNXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "kfc chicken"
+    },
+    {
+      "id": "chef",
+      "description": "Cartoon chef mascot",
+      "imageUrl": "https://storage.googleapis.com/aifirebase-images/app-images/chef.png",
+      "imageHint": "chef mascot"
     }
   ]
 }

@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -40,7 +41,7 @@ const navLinks = [
         { href: "/feed", label: "Browse Dishes" },
     ] 
   },
-  { href: "#", label: "Contact" },
+  { href: "/about", label: "About" },
 ];
 
 function NavLinks({ isMobile, onLinkClick }: { isMobile?: boolean, onLinkClick?: () => void }) {
