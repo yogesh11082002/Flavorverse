@@ -4,7 +4,10 @@ import type { Dish } from './types';
 const getImage = (id: string) => {
     const img = PlaceHolderImages.find(p => p.id === id);
     if (!img) {
-        throw new Error(`Image with id ${id} not found`);
+        // Fallback to a default image if not found to prevent crashes
+        const defaultImg = PlaceHolderImages.find(p => p.id === 'dish-1');
+        if(!defaultImg) throw new Error(`Image with id ${id} and default image not found`);
+        return defaultImg;
     }
     return img;
 }
@@ -12,55 +15,55 @@ const getImage = (id: string) => {
 export const dishes: Dish[] = [
   {
     id: '1',
-    name: 'Classic Spaghetti Bolognese',
-    description: 'A rich and savory meat sauce over perfectly cooked pasta. A timeless classic.',
+    name: 'Margherita Bliss',
+    description: 'Classic cheese and tomato sauce with fresh basil.',
     author: 'Jane Doe',
     authorImage: getImage('author-1'),
-    image: getImage('dish-1'),
+    image: getImage('dish-8'),
     likes: 128,
     commentsCount: 23,
     category: 'Trending',
   },
   {
     id: '2',
-    name: 'Homestyle Chicken Curry',
-    description: 'Tender chicken pieces in a fragrant and spicy curry sauce. Served with basmati rice.',
+    name: 'Pepperoni Paradise',
+    description: 'Loaded with spicy pepperoni and melted mozzarella.',
     author: 'John Smith',
     authorImage: getImage('author-2'),
-    image: getImage('dish-2'),
+    image: getImage('dish-1'), // using spaghetti for pepperoni
     likes: 256,
     commentsCount: 45,
     category: 'Popular',
   },
   {
     id: '3',
-    name: 'The Ultimate Vegan Burger',
-    description: 'A juicy plant-based patty with all the fixings. You won\'t believe it\'s vegan!',
+    name: 'Veggie Delight',
+    description: 'A colorful mix of bell peppers, olives, onions, and mushrooms.',
     author: 'Emily White',
     authorImage: getImage('author-3'),
-    image: getImage('dish-3'),
+    image: getImage('dish-10'),
     likes: 98,
     commentsCount: 18,
     category: 'Latest',
   },
   {
     id: '4',
-    name: 'Decadent Chocolate Fudge Cake',
-    description: 'Moist chocolate cake with a rich fudge frosting. A chocolate lover\'s dream.',
+    name: 'Classic Beef Royale',
+    description: 'Juicy beef patty with lettuce, tomato, and cheese.',
     author: 'Michael Brown',
     authorImage: getImage('author-4'),
-    image: getImage('dish-4'),
+    image: getImage('dish-3'),
     likes: 450,
     commentsCount: 88,
     category: 'Trending',
   },
   {
     id: '5',
-    name: 'Sunrise Avocado Toast',
-    description: 'Sourdough toast with smashed avocado, a sprinkle of chili flakes, and a squeeze of lime.',
+    name: 'Spicy Chicken Crunch',
+    description: 'Crispy chicken patty with a spicy mayo kick.',
     author: 'Jane Doe',
     authorImage: getImage('author-1'),
-    image: getImage('dish-5'),
+    image: getImage('dish-2'),
     likes: 72,
     commentsCount: 12,
     category: 'Latest',

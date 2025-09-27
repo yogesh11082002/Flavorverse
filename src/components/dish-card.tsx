@@ -3,10 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Heart, MessageSquare } from "lucide-react";
+import { Star } from "lucide-react";
 import type { Dish } from "@/lib/types";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "./ui/button";
 
 type DishCardProps = {
   dish: Dish;
@@ -15,49 +15,39 @@ type DishCardProps = {
 export default function DishCard({ dish }: DishCardProps) {
   return (
     <motion.div
-      whileHover={{ scale: 1.03, y: -5 }}
+      whileHover={{ y: -5 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
-      <Card className="overflow-hidden h-full flex flex-col">
-        <Link href={`/dish/${dish.id}`} className="block">
-          <div className="aspect-w-16 aspect-h-9 overflow-hidden">
+      <Card className="overflow-hidden h-full flex flex-col group border-2 hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl">
+          <div className="relative aspect-square overflow-hidden">
              <Image
                 src={dish.image.imageUrl}
                 alt={dish.name}
-                width={600}
-                height={400}
-                className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-110"
                 data-ai-hint={dish.image.imageHint}
               />
           </div>
-        </Link>
-        <CardHeader>
-           <div className="flex items-center gap-3">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={dish.authorImage.imageUrl} alt={dish.author} data-ai-hint={dish.authorImage.imageHint} />
-                <AvatarFallback>{dish.author.charAt(0)}</AvatarFallback>
-              </Avatar>
-              <div className="text-sm font-medium text-foreground">{dish.author}</div>
-           </div>
-          <CardTitle className="font-headline text-xl pt-2">
-            <Link href={`/dish/${dish.id}`} className="hover:text-primary transition-colors">
-              {dish.name}
-            </Link>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="flex-grow">
-          <p className="text-muted-foreground line-clamp-3">{dish.description}</p>
+        <CardContent className="p-4 flex-grow flex flex-col">
+          <div className="flex justify-between items-start mb-2">
+            <h3 className="font-headline text-xl font-bold leading-tight">
+              <Link href={`/dish/${dish.id}`} className="hover:text-primary transition-colors stretched-link">
+                {dish.name}
+              </Link>
+            </h3>
+            <div className="flex items-center gap-1 bg-primary/10 text-primary font-bold text-xs px-2 py-1 rounded-full">
+              <Star className="h-3 w-3 fill-primary" />
+              <span>4.6</span>
+            </div>
+          </div>
+          <p className="text-muted-foreground text-sm line-clamp-2 mb-4 flex-grow">{dish.description}</p>
+          <div className="flex justify-between items-center mt-auto">
+            <div className="font-headline text-lg font-bold text-foreground">
+              ${(dish.likes / 100).toFixed(2)}
+            </div>
+            <Button size="sm" className="font-bold rounded-full">Add +</Button>
+          </div>
         </CardContent>
-        <CardFooter className="flex items-center justify-end gap-4 text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Heart className="h-4 w-4" />
-            <span className="text-sm">{dish.likes}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <MessageSquare className="h-4 w-4" />
-            <span className="text-sm">{dish.commentsCount}</span>
-          </div>
-        </CardFooter>
       </Card>
     </motion.div>
   );
