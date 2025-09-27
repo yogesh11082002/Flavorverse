@@ -7,6 +7,9 @@ import { AboutUsSection } from "@/components/landing/about-us-section";
 import { HowItWorksSection } from "@/components/landing/how-it-works-section";
 import { FreshDeliciousDelivered } from "@/components/landing/fresh-delicious-delivered";
 import { PopularDishes } from "@/components/landing/popular-dishes";
+import { TopCategories } from "@/components/collection/top-categories";
+import { NewProducts } from "@/components/collection/new-products";
+import { PromoBanner } from "@/components/collection/promo-banner";
 
 
 export default function Home() {
@@ -16,6 +19,17 @@ export default function Home() {
       <PopularDishes />
       <FreshDeliciousDelivered />
       <HowItWorksSection />
+      <div className="container mx-auto px-4 py-8">
+        <TopCategories />
+        <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          <div className="lg:col-span-2">
+            <NewProducts />
+          </div>
+          <div>
+            <PromoBanner />
+          </div>
+        </div>
+      </div>
       <PopularBrands />
       <CategoryGrid />
       <DiscountedGoods />
