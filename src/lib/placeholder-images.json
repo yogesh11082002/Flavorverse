@@ -99,49 +99,49 @@
     {
       "id": "brand-dominos",
       "description": "Dominos Pizza Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1695920042189-3932267e2421?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkb21pbm9zJTIwcGl6emF8ZW58MHx8fHwxNzU4OTY5MDE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1544067963-8a045010edcd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkb21pbm9zJTIwcGl6emF8ZW58MHx8fHwxNzU4OTY5MDE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "dominos pizza"
     },
     {
       "id": "brand-pizzahut",
       "description": "Pizza Hut Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1708184528296-906eb7f345f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxwaXp6YSUyMGh1dHxlbnwwfHx8fDE3NTg5NjkwMTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1513104890138-7c749659a591?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxwaXp6YSUyMGh1dHxlbnwwfHx8fDE3NTg5NjkwMTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "pizza hut"
     },
     {
       "id": "brand-fanta",
       "description": "Fanta Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1599686100490-c386c444baf1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZmFudGElMjBsb2dvfGVufDB8fHx8MTc1ODk2OTAxNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1653499676737-becf2c9562c8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmYW50YSUyMGxvZ298ZW58MHx8fHwxNzU4OTY5MDE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "fanta logo"
     },
     {
       "id": "brand-carlsjr",
       "description": "Carl's Jr. Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1620133026537-882224c4aeb0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y2FybHMlMjBqcnxlbnwwfHx8fDE3NTg5NjkwMTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1615826134382-f1825312f0e4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjYXJscyUyMGpyfGVufDB8fHx8MTc1ODk2OTAxNXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "carls jr"
     },
     {
       "id": "brand-folgers",
       "description": "Folgers Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1610920051820-cb947e1c75da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxmb2xnZXJzJTIwY29mZmVlfGVufDB8fHx8MTc1ODk2OTAxNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1575221731327-2a7644e9b9f9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxmb2xnZXJzJTIwY29mZmVlfGVufDB8fHx8MTc1ODk2OTAxNXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "folgers coffee"
     },
     {
       "id": "brand-fritos",
       "description": "Fritos Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1658078367419-11c2cf639094?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmcml0b3MlMjBjaGlwc3xlbnwwfHx8fDE3NTg5NjkwMTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1599975744981-48d63c8f38af?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxmcml0b3MlMjBjaGlwc3xlbnwwfHx8fDE3NTg5NjkwMTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "fritos chips"
     },
     {
       "id": "brand-hardees",
       "description": "Hardee's Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1701534979355-7c03953df1bd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxoYXJkZWVzJTIwbG9nb3xlbnwwfHx8fDE3NTg5NjkwMTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1739055547874-4fe440a2bfea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxoYXJkZWVzJTIwbG9nb3xlbnwwfHx8fDE3NTg5NjkwMTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "hardees logo"
     },
     {
       "id": "brand-kfc",
       "description": "KFC Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1583840726841-c35239a17b23?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxrZmMlMjBjaGlja2VufGVufDB8fHx8MTc1ODk2OTAxNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1689928600118-f6c3f57f4f45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxrZmMlMjBjaGlja2VufGVufDB8fHx8MTc1ODk2OTAxNXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "kfc chicken"
     }
   ]
