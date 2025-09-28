@@ -22,8 +22,12 @@ export default function DishCard({ dish }: DishCardProps) {
   const router = useRouter();
   const { toast } = useToast();
 
+  // Price calculation might need adjustment based on your logic
+  const price = dish.likes ? (dish.likes / 100) : 5.99;
+  const originalPrice = price * 1.5;
+
   const handleAddToCart = () => {
-    addToCart({ ...dish, price: dish.likes / 100 });
+    addToCart({ ...dish, price });
     toast({
       title: "Added to Cart",
       description: `${dish.name} has been added to your cart.`,
@@ -34,8 +38,6 @@ export default function DishCard({ dish }: DishCardProps) {
       ),
     });
   };
-  
-  const originalPrice = (dish.likes / 100) * 1.5;
 
   return (
     <motion.div
@@ -72,7 +74,7 @@ export default function DishCard({ dish }: DishCardProps) {
           <div className="flex justify-between items-end mt-auto">
             <div className="flex items-baseline gap-2">
                 <div className="font-headline text-lg font-bold text-foreground">
-                    ${(dish.likes / 100).toFixed(2)}
+                    ${price.toFixed(2)}
                 </div>
                 <div className="text-sm text-muted-foreground line-through">
                     ${originalPrice.toFixed(2)}

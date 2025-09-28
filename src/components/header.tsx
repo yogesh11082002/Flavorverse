@@ -21,6 +21,8 @@ import {
 import { useCart } from "@/context/cart-context";
 import { useUser } from "@/firebase";
 import { getAuth, signOut } from "firebase/auth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -36,7 +38,7 @@ const navLinks = [
     ]
   },
   { 
-    href: "/feed", 
+    href: "/upload", 
     label: "Shop", 
     isHot: true, 
     hasDropdown: true, 
@@ -142,7 +144,7 @@ export default function Header() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild>
-                    <Link href="/profile/user">
+                    <Link href={`/profile/${user.uid}`}>
                       <User className="mr-2 h-4 w-4" />
                       <span>My Profile</span>
                     </Link>
@@ -189,12 +191,21 @@ export default function Header() {
                         Cart ({totalItems})
                       </Link>
                     </Button>
-                    <Button asChild className="font-bold rounded-lg w-full bg-blue-500 hover:bg-blue-600 text-white">
-                        <Link href="/profile/user" onClick={() => setIsSheetOpen(false)}>
+                    {user ? (
+                      <Button asChild className="font-bold rounded-lg w-full bg-blue-500 hover:bg-blue-600 text-white">
+                        <Link href={`/profile/${user.uid}`} onClick={() => setIsSheetOpen(false)}>
                             <User className="h-4 w-4 mr-2"/>
                             My Profile
                         </Link>
                     </Button>
+                    ) : (
+                       <Button asChild className="font-bold rounded-lg w-full bg-blue-500 hover:bg-blue-600 text-white">
+                        <Link href="/login" onClick={() => setIsSheetOpen(false)}>
+                            <User className="h-4 w-4 mr-2"/>
+                            Login
+                        </Link>
+                    </Button>
+                    )}
                   </div>
               </div>
             </SheetContent>
@@ -204,6 +215,3 @@ export default function Header() {
     </header>
   );
 }
-
-// Added Avatar components for user profile picture
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

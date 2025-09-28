@@ -1,55 +1,46 @@
+
 "use server";
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
-const DishSchema = z.object({
-  name: z.string().min(3, { message: "Dish name must be at least 3 characters." }),
-  description: z.string().min(10, { message: "Description must be at least 10 characters." }),
-  image: z.any().refine(files => files?.length === 1, "Image is required."),
+// This file can be used for server actions that don't directly involve Firestore writes,
+// as those are now handled client-side for real-time updates.
+// For example, you could have complex business logic here that is triggered by a form.
+// For now, the uploadDishAction is deprecated in favor of client-side Firestore SDK usage.
+
+const ExampleSchema = z.object({
+  someField: z.string(),
 });
 
 export type FormState = {
   message: string;
   errors?: {
-    name?: string[];
-    description?: string[];
-    image?: string[];
+    someField?: string[];
   };
 };
 
-export async function uploadDishAction(
+export async function exampleAction(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
   
-  const validatedFields = DishSchema.safeParse({
-    name: formData.get("name"),
-    description: formData.get("description"),
-    image: formData.get("image"),
+  const validatedFields = ExampleSchema.safeParse({
+    someField: formData.get("someField"),
   });
   
-  // Artificial delay to simulate network latency
   await new Promise(resolve => setTimeout(resolve, 1000));
 
   if (!validatedFields.success) {
     return {
-      message: "Validation failed. Please check your input.",
+      message: "Validation failed.",
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
 
-  // Here you would typically handle file upload to a service like S3 or Cloudinary
-  // and then save the data (including image URL) to your database.
-  console.log("New dish submitted:", {
-    name: validatedFields.data.name,
-    description: validatedFields.data.description,
-    image: validatedFields.data.image.name,
-  });
+  console.log("Action performed:", validatedFields.data);
   
-  // Revalidate the feed page to show the new dish
-  revalidatePath("/feed");
   revalidatePath("/");
 
-  return { message: "Dish uploaded successfully!" };
+  return { message: "Action completed successfully!" };
 }

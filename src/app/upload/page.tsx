@@ -1,124 +1,126 @@
+
 "use client";
 
-import { useFormState } from "react-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { uploadDishAction } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Upload, Loader2 } from "lucide-react";
+import { useFirestore, useUser } from "@/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { useRouter } from "next/navigation";
+import { PlaceHolderImages } from "@/lib/placeholder-images";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 const DishSchema = z.object({
   name: z.string().min(3, { message: "Dish name must be at least 3 characters." }),
   description: z.string().min(10, { message: "Description must be at least 10 characters." }),
-  image: z.any().refine(files => files?.length === 1, "Image is required."),
+  image: z.string(), // We'll handle file upload separately, for now this is a placeholder URL
+  category: z.enum(["Trending", "Latest", "Popular"]),
 });
 
-function SubmitButton() {
-    const { pending } = useFormStatus();
-    return (
-        <Button type="submit" disabled={pending} className="w-full">
-            {pending ? (
-                <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Submitting...
-                </>
-            ) : "Upload Dish"}
-        </Button>
-    )
-}
-
-// Custom hook for useFormStatus since it's only available in Next.js 14 canary
-function useFormStatus() {
-    const [pending, setPending] = React.useState(false);
-    const formRef = React.useRef<HTMLFormElement>(null);
-
-    React.useEffect(() => {
-        const form = formRef.current?.closest('form');
-        if (form) {
-            const handleStart = (event: Event) => {
-                const formData = new FormData(event.currentTarget as HTMLFormElement);
-                const action = (event.currentTarget as HTMLFormElement).action;
-                
-                // A simple check to see if we should enter a pending state.
-                // In a real app, you might want to be more specific.
-                if (action) {
-                    setPending(true);
-                }
-            };
-            
-            const handleFinish = () => {
-                setPending(false);
-            };
-
-            form.addEventListener('submit', handleStart);
-
-            const observer = new MutationObserver(() => {
-                if (document.body.getAttribute('data-form-state') !== 'submitting') {
-                    handleFinish();
-                }
-            });
-            
-            observer.observe(document.body, { attributes: true, attributeFilter: ['data-form-state'] });
-
-            return () => {
-                form.removeEventListener('submit', handleStart);
-                observer.disconnect();
-            };
-        }
-    }, []);
-
-    return { pending, ref: formRef };
-}
-
-
-
 export default function UploadPage() {
-  const [state, formAction] = useFormState(uploadDishAction, { message: "" });
   const { toast } = useToast();
-  const formRef = useRef<HTMLFormElement>(null);
-  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const firestore = useFirestore();
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof DishSchema>>({
     resolver: zodResolver(DishSchema),
     defaultValues: {
       name: "",
       description: "",
-      image: undefined
+      image: PlaceHolderImages[0].imageUrl,
     },
   });
 
   useEffect(() => {
-    if (state.message) {
-      if (state.errors) {
-        toast({
-          title: "Error",
-          description: state.message,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Success",
-          description: state.message,
-        });
-        form.reset();
-        if (formRef.current) {
-          formRef.current.reset();
-        }
-      }
-      document.body.removeAttribute('data-form-state');
+    if (!isUserLoading && !user) {
+      router.push('/login');
     }
-  }, [state, toast, form]);
+  }, [user, isUserLoading, router]);
 
-  const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    document.body.setAttribute('data-form-state', 'submitting');
-    // The form action will be invoked by the browser.
+  const onSubmit = async (values: z.infer<typeof DishSchema>) => {
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to upload a dish.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const imagePlaceholder = PlaceHolderImages.find(img => img.id.startsWith('dish-')) || PlaceHolderImages[0];
+      const authorPlaceholder = PlaceHolderImages.find(img => img.id.startsWith('author-')) || PlaceHolderImages[0];
+
+      await addDoc(collection(firestore, 'dishes'), {
+        name: values.name,
+        description: values.description,
+        category: values.category,
+        image: {
+            imageUrl: imagePlaceholder.imageUrl,
+            imageHint: imagePlaceholder.imageHint,
+        },
+        author: user.displayName || user.email,
+        authorImage: {
+            imageUrl: user.photoURL || authorPlaceholder.imageUrl,
+            imageHint: 'user profile',
+        },
+        userId: user.uid,
+        likes: 0,
+        commentsCount: 0,
+        createdAt: serverTimestamp(),
+      });
+
+      toast({
+        title: "Success",
+        description: "Dish uploaded successfully!",
+      });
+      router.push("/feed");
+    } catch (error) {
+      console.error("Error uploading dish: ", error);
+      toast({
+        title: "Error",
+        description: "Failed to upload dish.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  if(isUserLoading || !user) {
+    return (
+        <div className="container mx-auto max-w-2xl px-4 py-12">
+            <Card>
+                <CardHeader>
+                    <Skeleton className="h-8 w-48" />
+                    <Skeleton className="h-4 w-full mt-2" />
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-24 w-full" />
+                    <Skeleton className="h-48 w-full" />
+                    <Skeleton className="h-10 w-full" />
+                </CardContent>
+            </Card>
+        </div>
+    )
+  }
 
   return (
     <div className="container mx-auto max-w-2xl px-4 py-12">
@@ -130,9 +132,7 @@ export default function UploadPage() {
         <CardContent>
           <Form {...form}>
             <form 
-              ref={formRef} 
-              action={formAction} 
-              onSubmit={onFormSubmit}
+              onSubmit={form.handleSubmit(onSubmit)}
               className="space-y-6"
             >
               <FormField
@@ -144,7 +144,7 @@ export default function UploadPage() {
                     <FormControl>
                       <Input placeholder="e.g., Classic Spaghetti Bolognese" {...field} />
                     </FormControl>
-                    <FormMessage>{state.errors?.name}</FormMessage>
+                    <FormMessage/>
                   </FormItem>
                 )}
               />
@@ -158,7 +158,30 @@ export default function UploadPage() {
                     <FormControl>
                       <Textarea placeholder="Tell us about your dish..." className="resize-none" {...field} />
                     </FormControl>
-                    <FormMessage>{state.errors?.description}</FormMessage>
+                    <FormMessage/>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a category" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Trending">Trending</SelectItem>
+                        <SelectItem value="Latest">Latest</SelectItem>
+                        <SelectItem value="Popular">Popular</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -166,7 +189,7 @@ export default function UploadPage() {
               <FormField
                 control={form.control}
                 name="image"
-                render={({ field: { onChange, value, ...rest } }) => (
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel>Dish Image</FormLabel>
                     <FormControl>
@@ -176,24 +199,31 @@ export default function UploadPage() {
                                 <Upload className="w-8 h-8 mb-4 text-muted-foreground" />
                                 <p className="mb-2 text-sm text-muted-foreground"><span className="font-semibold">Click to upload</span> or drag and drop</p>
                                 <p className="text-xs text-muted-foreground">PNG, JPG, GIF up to 10MB</p>
+                                <p className="text-xs text-muted-foreground mt-2">(Image upload is simulated, a random image will be used)</p>
                             </div>
                             <Input 
                               id="dropzone-file" 
                               type="file" 
                               className="hidden" 
                               accept="image/*"
-                              {...rest}
-                              onChange={(e) => onChange(e.target.files)} 
+                              disabled
                             />
                         </label>
                       </div> 
                     </FormControl>
-                    <FormMessage>{state.errors?.image as unknown as string}</FormMessage>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
               
-              <SubmitButton />
+              <Button type="submit" disabled={isSubmitting} className="w-full">
+                  {isSubmitting ? (
+                      <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Submitting...
+                      </>
+                  ) : "Upload Dish"}
+              </Button>
             </form>
           </Form>
         </CardContent>

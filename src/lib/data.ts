@@ -1,3 +1,4 @@
+
 import { PlaceHolderImages } from './placeholder-images';
 import type { Dish } from './types';
 
@@ -12,12 +13,14 @@ const getImage = (id: string) => {
     return img;
 }
 
+// This data is now for placeholder/fallback purposes only, as live data comes from Firestore.
 export const dishes: Dish[] = [
   {
     id: '1',
     name: 'Margherita Bliss',
     description: 'Classic cheese and tomato sauce with fresh basil.',
     author: 'Jane Doe',
+    userId: 'user-1',
     authorImage: getImage('author-1'),
     image: getImage('dish-8'),
     likes: 128,
@@ -29,6 +32,7 @@ export const dishes: Dish[] = [
     name: 'Pepperoni Paradise',
     description: 'Loaded with spicy pepperoni and melted mozzarella.',
     author: 'John Smith',
+    userId: 'user-2',
     authorImage: getImage('author-2'),
     image: getImage('dish-1'), // using spaghetti for pepperoni
     likes: 256,
@@ -40,6 +44,7 @@ export const dishes: Dish[] = [
     name: 'Veggie Delight',
     description: 'A colorful mix of bell peppers, olives, onions, and mushrooms.',
     author: 'Emily White',
+    userId: 'user-3',
     authorImage: getImage('author-3'),
     image: getImage('dish-10'),
     likes: 98,
@@ -51,6 +56,7 @@ export const dishes: Dish[] = [
     name: 'Classic Beef Royale',
     description: 'Juicy beef patty with lettuce, tomato, and cheese.',
     author: 'Michael Brown',
+    userId: 'user-4',
     authorImage: getImage('author-4'),
     image: getImage('dish-3'),
     likes: 450,
@@ -62,6 +68,7 @@ export const dishes: Dish[] = [
     name: 'Spicy Chicken Crunch',
     description: 'Crispy chicken patty with a spicy mayo kick.',
     author: 'Jane Doe',
+    userId: 'user-1',
     authorImage: getImage('author-1'),
     image: getImage('dish-2'),
     likes: 72,
@@ -73,6 +80,7 @@ export const dishes: Dish[] = [
     name: 'Artisanal Sushi Platter',
     description: 'A beautiful assortment of fresh nigiri and maki rolls. Made with high-quality fish.',
     author: 'John Smith',
+    userId: 'user-2',
     authorImage: getImage('author-2'),
     image: getImage('dish-6'),
     likes: 310,
@@ -84,6 +92,7 @@ export const dishes: Dish[] = [
     name: 'Fluffy Pancakes with Berries',
     description: 'A stack of light and fluffy pancakes topped with fresh mixed berries and maple syrup.',
     author: 'Emily White',
+    userId: 'user-3',
     authorImage: getImage('author-3'),
     image: getImage('dish-7'),
     likes: 180,
@@ -95,6 +104,7 @@ export const dishes: Dish[] = [
     name: 'Authentic Margherita Pizza',
     description: 'Classic Neapolitan pizza with San Marzano tomatoes, fresh mozzarella, and basil.',
     author: 'Michael Brown',
+    userId: 'user-4',
     authorImage: getImage('author-4'),
     image: getImage('dish-8'),
     likes: 295,
@@ -106,6 +116,7 @@ export const dishes: Dish[] = [
     name: 'Hearty Ramen Noodle Soup',
     description: 'A comforting bowl of rich broth, tender noodles, and various toppings.',
     author: 'Jane Doe',
+    userId: 'user-1',
     authorImage: getImage('author-1'),
     image: getImage('dish-9'),
     likes: 215,
@@ -117,6 +128,7 @@ export const dishes: Dish[] = [
     name: 'Fresh Garden Salad',
     description: 'A crisp and refreshing salad with a variety of greens, vegetables, and a light vinaigrette.',
     author: 'John Smith',
+    userId: 'user-2',
     authorImage: getImage('author-2'),
     image: getImage('dish-10'),
     likes: 65,
@@ -128,6 +140,7 @@ export const dishes: Dish[] = [
     name: 'Street-Style Tacos al Pastor',
     description: 'Marinated pork tacos with pineapple, onions, and cilantro. A taste of Mexico City.',
     author: 'Emily White',
+    userId: 'user-3',
     authorImage: getImage('author-3'),
     image: getImage('dish-11'),
     likes: 350,
@@ -139,6 +152,7 @@ export const dishes: Dish[] = [
     name: 'Morning Blueberry Muffins',
     description: 'Warm and moist blueberry muffins, perfect for breakfast or a snack.',
     author: 'Michael Brown',
+    userId: 'user-4',
     authorImage: getImage('author-4'),
     image: getImage('dish-12'),
     likes: 150,

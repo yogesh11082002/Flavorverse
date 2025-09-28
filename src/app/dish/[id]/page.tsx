@@ -1,9 +1,8 @@
 
 "use client";
 
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
-import { dishes } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Heart, MessageSquare, Send } from 'lucide-react';
@@ -11,65 +10,93 @@ import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDoc, useCollection, useFirestore, useUser, useMemoFirebase } from '@/firebase';
+import type { Dish, Comment as CommentType } from '@/lib/types';
+import { doc, collection, addDoc, serverTimestamp, deleteDoc, setDoc } from 'firebase/firestore';
+import { Skeleton } from '@/components/ui/skeleton';
 
-type Comment = {
-  author: string;
-  authorImage: string;
-  text: string;
-};
+export default function DishDetailPage() {
+  const params = useParams();
+  const id = params.id as string;
+  const firestore = useFirestore();
+  const { user } = useUser();
 
-// This function needs to be outside the component to be used in generateStaticParams
-export function generateStaticParams() {
-  return dishes.map((dish) => ({
-    id: dish.id,
-  }));
-}
+  const dishRef = useMemoFirebase(() => doc(firestore, 'dishes', id), [firestore, id]);
+  const { data: dish, isLoading: isDishLoading } = useDoc<Dish>(dishRef);
 
-export default function DishDetailPage({ params }: { params: { id: string } }) {
-  // `find` can return undefined, so we need to handle that case.
-  const dish = dishes.find((d) => d.id === params.id);
+  const commentsQuery = useMemoFirebase(() => collection(firestore, 'dishes', id, 'comments'), [firestore, id]);
+  const { data: comments, isLoading: areCommentsLoading } = useCollection<CommentType>(commentsQuery);
+
+  const likesRef = useMemoFirebase(() => collection(firestore, 'dishes', id, 'likes'), [firestore, id]);
+  const { data: likes, isLoading: areLikesLoading } = useCollection(likesRef);
   
-  // States should be initialized inside the component.
-  const [likes, setLikes] = useState(0);
-  const [isLiked, setIsLiked] = useState(false);
-  const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
 
-  // Defer state initialization that depends on props to useEffect.
-  useEffect(() => {
-    if (dish) {
-      setLikes(dish.likes);
-    }
-  }, [dish]);
+  const isLiked = user ? likes?.some(like => like.id === user.uid) : false;
+  const likesCount = likes?.length || 0;
 
-
-  if (!dish) {
-    // This will show the 404 page if a dish with the given ID is not found.
-    return notFound();
-  }
-
-  const handleLike = () => {
+  const handleLike = async () => {
+    if (!user || !dish) return;
+    const likeRef = doc(firestore, 'dishes', dish.id, 'likes', user.uid);
     if (isLiked) {
-      setLikes(likes - 1);
+      await deleteDoc(likeRef);
     } else {
-      setLikes(likes + 1);
+      await setDoc(likeRef, { createdAt: serverTimestamp() });
     }
-    setIsLiked(!isLiked);
   };
   
-  const handleCommentSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleCommentSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (newComment.trim()) {
-      const comment: Comment = {
-        author: "User Name",
-        authorImage: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1ODg2Nzc5Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+    if (newComment.trim() && user && dish) {
+      const comment: Omit<CommentType, 'id' | 'createdAt'> = {
+        dishId: dish.id,
+        userId: user.uid,
+        author: user.displayName || user.email || 'Anonymous',
+        authorImage: user.photoURL || '',
         text: newComment,
       };
-      setComments([comment, ...comments]);
+      await addDoc(collection(firestore, 'dishes', dish.id, 'comments'), {
+        ...comment,
+        createdAt: serverTimestamp(),
+      });
       setNewComment("");
     }
   };
+
+  if (isDishLoading) {
+    return (
+      <div className="container mx-auto max-w-5xl px-4 py-12">
+        <Card className="overflow-hidden">
+          <div className="grid md:grid-cols-2">
+            <Skeleton className="aspect-square md:aspect-auto h-full w-full" />
+            <div className="flex flex-col p-6 md:p-8">
+              <div className="flex items-center gap-3 mb-4">
+                <Skeleton className="h-12 w-12 rounded-full" />
+                <Skeleton className="h-6 w-32" />
+              </div>
+              <Skeleton className="h-10 w-3/4 mb-4" />
+              <Skeleton className="h-20 w-full mb-6" />
+              <div className="flex items-center gap-6 mb-6">
+                <Skeleton className="h-8 w-24" />
+                <Skeleton className="h-8 w-24" />
+              </div>
+              <Separator className="my-6" />
+              <Skeleton className="h-8 w-1/3 mb-4" />
+              <div className="space-y-4">
+                <Skeleton className="h-16 w-full" />
+                <Skeleton className="h-16 w-full" />
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!dish) {
+    return notFound();
+  }
 
   const authorUsername = dish.author.toLowerCase().replace(' ', '');
 
@@ -88,7 +115,7 @@ export default function DishDetailPage({ params }: { params: { id: string } }) {
           </div>
           <div className="flex flex-col p-6 md:p-8">
             <div className="flex items-center gap-3 mb-4">
-               <Link href={`/profile/${authorUsername}`} className="flex items-center gap-3 group">
+               <Link href={`/profile/${dish.userId}`} className="flex items-center gap-3 group">
                 <Avatar>
                   <AvatarImage src={dish.authorImage.imageUrl} alt={dish.author} data-ai-hint={dish.authorImage.imageHint} />
                   <AvatarFallback>{dish.author.charAt(0)}</AvatarFallback>
@@ -100,13 +127,13 @@ export default function DishDetailPage({ params }: { params: { id: string } }) {
             <p className="text-muted-foreground mb-6 flex-grow">{dish.description}</p>
             
             <div className="flex items-center gap-6 text-muted-foreground mb-6">
-              <Button variant="outline" size="sm" className="flex items-center gap-2" onClick={handleLike}>
+              <Button variant="outline" size="sm" className="flex items-center gap-2" onClick={handleLike} disabled={!user || areLikesLoading}>
                 <Heart className={`h-4 w-4 text-red-500 ${isLiked ? 'fill-current' : ''}`} />
-                <span>{likes} Likes</span>
+                <span>{likesCount} Likes</span>
               </Button>
               <div className="flex items-center gap-2">
                 <MessageSquare className="h-4 w-4" />
-                <span>{dish.commentsCount + comments.length} Comments</span>
+                <span>{comments?.length || 0} Comments</span>
               </div>
             </div>
             
@@ -115,11 +142,13 @@ export default function DishDetailPage({ params }: { params: { id: string } }) {
             <div className="flex-grow flex flex-col">
               <h2 className="text-xl font-bold font-headline mb-4">Comments</h2>
               <div className="space-y-4 flex-grow max-h-60 overflow-y-auto pr-2">
-                {comments.length === 0 ? (
+                {areCommentsLoading ? (
+                    <div className="text-sm text-muted-foreground">Loading comments...</div>
+                ) : comments?.length === 0 ? (
                   <div className="text-sm text-muted-foreground">No comments yet.</div>
                 ) : (
-                  comments.map((comment, index) => (
-                    <div key={index} className="flex items-start gap-3">
+                  comments.map((comment) => (
+                    <div key={comment.id} className="flex items-start gap-3">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={comment.authorImage} alt={comment.author} />
                         <AvatarFallback>{comment.author.charAt(0)}</AvatarFallback>
@@ -133,17 +162,23 @@ export default function DishDetailPage({ params }: { params: { id: string } }) {
                 )}
               </div>
 
-              <form className="mt-6 flex gap-2" onSubmit={handleCommentSubmit}>
-                <Textarea 
-                  placeholder="Add a comment..." 
-                  className="resize-none"
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                />
-                <Button type="submit" size="icon">
-                  <Send className="h-4 w-4" />
-                </Button>
-              </form>
+              {user ? (
+                <form className="mt-6 flex gap-2" onSubmit={handleCommentSubmit}>
+                  <Textarea 
+                    placeholder="Add a comment..." 
+                    className="resize-none"
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                  />
+                  <Button type="submit" size="icon">
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </form>
+              ): (
+                <div className="mt-6 text-sm text-muted-foreground">
+                    <Link href="/login" className="text-primary underline">Log in</Link> to add a comment.
+                </div>
+              )}
             </div>
           </div>
         </div>
