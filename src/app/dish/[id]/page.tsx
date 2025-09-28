@@ -13,7 +13,7 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { useDoc, useCollection, useFirestore, useUser, useMemoFirebase } from '@/firebase';
 import type { Dish, Comment as CommentType } from '@/lib/types';
-import { doc, collection, addDoc, serverTimestamp, deleteDoc, setDoc, runTransaction, increment } from 'firebase/firestore';
+import { doc, collection, addDoc, serverTimestamp, runTransaction, increment } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCart } from '@/context/cart-context';
 import { useToast } from '@/hooks/use-toast';
@@ -28,13 +28,13 @@ export default function DishDetailPage() {
   const { toast } = useToast();
   const router = useRouter();
 
-  const dishRef = useMemoFirebase(() => doc(firestore, 'dishes', id), [firestore, id]);
+  const dishRef = useMemoFirebase(() => firestore ? doc(firestore, 'dishes', id) : null, [firestore, id]);
   const { data: dish, isLoading: isDishLoading } = useDoc<Dish>(dishRef);
 
-  const commentsQuery = useMemoFirebase(() => collection(firestore, 'dishes', id, 'comments'), [firestore, id]);
+  const commentsQuery = useMemoFirebase(() => firestore ? collection(firestore, 'dishes', id, 'comments') : null, [firestore, id]);
   const { data: comments, isLoading: areCommentsLoading } = useCollection<CommentType>(commentsQuery);
 
-  const likesRef = useMemoFirebase(() => (user ? doc(firestore, 'dishes', id, 'likes', user.uid) : null), [firestore, id, user]);
+  const likesRef = useMemoFirebase(() => (user && firestore ? doc(firestore, 'dishes', id, 'likes', user.uid) : null), [firestore, id, user]);
   const { data: likeDoc, isLoading: isLikeLoading } = useDoc(likesRef);
   
   const [newComment, setNewComment] = useState("");
@@ -43,13 +43,13 @@ export default function DishDetailPage() {
   const likesCount = dish?.likesCount ?? 0;
 
   const handleLike = async () => {
-    if (!user || !dish) return;
+    if (!user || !firestore || !dish) return;
     const likeRef = doc(firestore, 'dishes', id, 'likes', user.uid);
     const dishDocRef = doc(firestore, 'dishes', id);
 
     await runTransaction(firestore, async (transaction) => {
-        const likeDoc = await transaction.get(likeRef);
-        if (likeDoc.exists()) {
+        const currentLikeDoc = await transaction.get(likeRef);
+        if (currentLikeDoc.exists()) {
             transaction.delete(likeRef);
             transaction.update(dishDocRef, { likesCount: increment(-1) });
         } else {
@@ -61,7 +61,7 @@ export default function DishDetailPage() {
   
   const handleCommentSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (newComment.trim() && user && dish) {
+    if (newComment.trim() && user && firestore && dish) {
       await addDoc(collection(firestore, 'dishes', id, 'comments'), {
         dishId: id,
         userId: user.uid,
@@ -99,7 +99,7 @@ export default function DishDetailPage() {
       <div className="container mx-auto max-w-5xl px-4 py-12">
         <Card className="overflow-hidden">
           <div className="grid md:grid-cols-2">
-            <Skeleton className="aspect-square md:aspect-auto h-full w-full" />
+            <Skeleton className="aspect-square md:aspect-auto h-full w-full min-h-[400px]" />
             <div className="flex flex-col p-6 md:p-8">
               <div className="flex items-center gap-3 mb-4">
                 <Skeleton className="h-12 w-12 rounded-full" />
@@ -128,27 +128,30 @@ export default function DishDetailPage() {
     return notFound();
   }
 
-  const discountedPrice = dish.discount ? dish.price * (1 - dish.discount / 100) : dish.price;
+  const discountedPrice = dish.discount && dish.discount > 0 ? dish.price * (1 - dish.discount / 100) : dish.price;
 
   return (
     <div className="container mx-auto max-w-5xl px-4 py-12">
       <Card className="overflow-hidden">
         <div className="grid md:grid-cols-2">
           <div className="relative aspect-square md:aspect-auto">
-            <Image
-              src={dish.image.imageUrl}
-              alt={dish.name}
-              fill
-              className="object-cover"
-              data-ai-hint={dish.image.imageHint}
-            />
+            {dish.image?.imageUrl && (
+              <Image
+                src={dish.image.imageUrl}
+                alt={dish.name}
+                fill
+                className="object-cover"
+                data-ai-hint={dish.image.imageHint}
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+            )}
           </div>
           <div className="flex flex-col p-6 md:p-8">
             <div className="flex items-center gap-3 mb-4">
                <Link href={`/profile/${dish.userId}`} className="flex items-center gap-3 group">
                 <Avatar>
-                  <AvatarImage src={dish.authorImage.imageUrl} alt={dish.author} data-ai-hint={dish.authorImage.imageHint} />
-                  <AvatarFallback>{dish.author.charAt(0)}</AvatarFallback>
+                  <AvatarImage src={dish.authorImage?.imageUrl} alt={dish.author} data-ai-hint={dish.authorImage?.imageHint} />
+                  <AvatarFallback>{dish.author?.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <span className="font-semibold group-hover:text-primary transition-colors">{dish.author}</span>
               </Link>
@@ -213,7 +216,7 @@ export default function DishDetailPage() {
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                   />
-                  <Button type="submit" size="icon">
+                  <Button type="submit" size="icon" disabled={!newComment.trim()}>
                     <Send className="h-4 w-4" />
                   </Button>
                 </form>
@@ -229,3 +232,5 @@ export default function DishDetailPage() {
     </div>
   );
 }
+
+    
