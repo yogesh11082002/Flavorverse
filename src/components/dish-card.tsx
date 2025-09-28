@@ -13,6 +13,7 @@ import { useCart } from "@/context/cart-context";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/firebase";
 import { useRouter } from "next/navigation";
+import React from "react";
 
 type DishCardProps = {
   dish: Dish;
@@ -30,7 +31,10 @@ export default function DishCard({ dish }: DishCardProps) {
 
   const discountedPrice = discount > 0 ? price * (1 - discount / 100) : price;
   
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault(); // Stop the link from navigating
+    e.stopPropagation(); // Stop the event from bubbling up to the link
+
     if (!user) {
         toast({
             title: "Please log in",
@@ -54,8 +58,9 @@ export default function DishCard({ dish }: DishCardProps) {
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className="h-full"
     >
-      <Card className="overflow-hidden h-full flex flex-col group border hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl">
-          <Link href={`/dish/${dish.id}`} className="block relative aspect-video overflow-hidden">
+      <Link href={`/dish/${dish.id}`} className="block h-full group">
+        <Card className="overflow-hidden h-full flex flex-col border group-hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl">
+          <div className="block relative aspect-video overflow-hidden">
             <Image
                 src={dish.image.imageUrl}
                 alt={dish.name}
@@ -71,29 +76,29 @@ export default function DishCard({ dish }: DishCardProps) {
                     <span className="font-bold">{likesCount}</span>
                 </Badge>
             </div>
-          </Link>
-        <CardContent className="p-3 flex-grow flex flex-col">
-          <h3 className="font-bold leading-tight text-md">
-            <Link href={`/dish/${dish.id}`} className="hover:text-primary transition-colors">
-              {dish.name}
-            </Link>
-          </h3>
-          <p className="text-muted-foreground text-xs line-clamp-2 mt-1 mb-2 flex-grow">{dish.description}</p>
-          <div className="flex justify-between items-end mt-auto">
-            <div className="flex items-baseline gap-2">
-                <div className="font-headline text-lg font-bold text-foreground">
-                    ${discountedPrice.toFixed(2)}
-                </div>
-                {discount > 0 && (
-                  <div className="text-sm text-muted-foreground line-through">
-                      ${price.toFixed(2)}
-                  </div>
-                )}
-            </div>
-            <Button size="sm" className="font-bold rounded-md text-lg w-10 h-10 p-0" onClick={handleAddToCart}>+</Button>
           </div>
-        </CardContent>
-      </Card>
+          <CardContent className="p-3 flex-grow flex flex-col">
+            <h3 className="font-bold leading-tight text-md group-hover:text-primary transition-colors">
+              {dish.name}
+            </h3>
+            <p className="text-muted-foreground text-xs line-clamp-2 mt-1 mb-2 flex-grow">{dish.description}</p>
+            <div className="flex justify-between items-end mt-auto">
+              <div className="flex items-baseline gap-2">
+                  <div className="font-headline text-lg font-bold text-foreground">
+                      ${discountedPrice.toFixed(2)}
+                  </div>
+                  {discount > 0 && (
+                    <div className="text-sm text-muted-foreground line-through">
+                        ${price.toFixed(2)}
+                    </div>
+                  )}
+              </div>
+              <Button size="sm" className="font-bold rounded-md text-lg w-10 h-10 p-0" onClick={handleAddToCart}>+</Button>
+            </div>
+          </CardContent>
+        </Card>
+      </Link>
     </motion.div>
   );
 }
+

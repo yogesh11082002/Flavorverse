@@ -5,7 +5,7 @@ import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Heart, MessageSquare, Send, ShoppingCart } from 'lucide-react';
+import { Heart, MessageSquare, Send, ShoppingCart, Loader2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
@@ -19,6 +19,39 @@ import { useCart } from '@/context/cart-context';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 
+function DishDetailSkeleton() {
+    return (
+      <div className="container mx-auto max-w-5xl px-4 py-12">
+        <Card className="overflow-hidden">
+          <div className="grid md:grid-cols-2">
+            <Skeleton className="aspect-square md:aspect-auto h-full w-full min-h-[400px]" />
+            <div className="flex flex-col p-6 md:p-8">
+              <div className="flex items-center gap-3 mb-4">
+                <Skeleton className="h-12 w-12 rounded-full" />
+                <Skeleton className="h-6 w-32" />
+              </div>
+              <Skeleton className="h-10 w-3/4 mb-4" />
+              <Skeleton className="h-6 w-1/4 mb-4" />
+              <Skeleton className="h-20 w-full mb-6" />
+              <div className="flex items-center gap-6 mb-6">
+                <Skeleton className="h-8 w-24" />
+                <Skeleton className="h-8 w-24" />
+              </div>
+              <Skeleton className="h-12 w-full" />
+              <Separator className="my-6" />
+              <Skeleton className="h-8 w-1/3 mb-4" />
+              <div className="space-y-4">
+                <Skeleton className="h-16 w-full" />
+                <Skeleton className="h-16 w-full" />
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+}
+
+
 export default function DishDetailPage() {
   const params = useParams();
   const id = params.id as string;
@@ -28,40 +61,58 @@ export default function DishDetailPage() {
   const { toast } = useToast();
   const router = useRouter();
 
-  const dishRef = useMemoFirebase(() => firestore ? doc(firestore, 'dishes', id) : null, [firestore, id]);
-  const { data: dish, isLoading: isDishLoading } = useDoc<Dish>(dishRef);
-
-  const commentsQuery = useMemoFirebase(() => firestore ? collection(firestore, 'dishes', id, 'comments') : null, [firestore, id]);
-  const { data: comments, isLoading: areCommentsLoading } = useCollection<CommentType>(commentsQuery);
-
-  const likesRef = useMemoFirebase(() => (user && firestore ? doc(firestore, 'dishes', id, 'likes', user.uid) : null), [firestore, id, user]);
-  const { data: likeDoc, isLoading: isLikeLoading } = useDoc(likesRef);
-  
   const [newComment, setNewComment] = useState("");
+  const [isLiking, setIsLiking] = useState(false);
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
-  const isLiked = !!likeDoc;
-  const likesCount = dish?.likesCount ?? 0;
+  // Memoized references for hooks
+  const dishRef = useMemoFirebase(() => (firestore && id ? doc(firestore, 'dishes', id) : null), [firestore, id]);
+  const commentsQuery = useMemoFirebase(() => (firestore && id ? collection(firestore, 'dishes', id, 'comments') : null), [firestore, id]);
+  const userLikeRef = useMemoFirebase(() => (firestore && user && id ? doc(firestore, 'dishes', id, 'likes', user.uid) : null), [firestore, user, id]);
+
+  // Data fetching hooks
+  const { data: dish, isLoading: isDishLoading } = useDoc<Dish>(dishRef);
+  const { data: comments, isLoading: areCommentsLoading } = useCollection<CommentType>(commentsQuery);
+  const { data: userLike, isLoading: isLikeLoading } = useDoc(userLikeRef);
+
+  const isLiked = !!userLike;
 
   const handleLike = async () => {
-    if (!user || !firestore || !dish) return;
-    const likeRef = doc(firestore, 'dishes', id, 'likes', user.uid);
-    const dishDocRef = doc(firestore, 'dishes', id);
+    if (!user || !firestore || !dish || isLiking) return;
 
-    await runTransaction(firestore, async (transaction) => {
+    setIsLiking(true);
+    const dishDocRef = doc(firestore, 'dishes', id);
+    const likeRef = doc(firestore, 'dishes', id, 'likes', user.uid);
+
+    try {
+      await runTransaction(firestore, async (transaction) => {
         const currentLikeDoc = await transaction.get(likeRef);
         if (currentLikeDoc.exists()) {
-            transaction.delete(likeRef);
-            transaction.update(dishDocRef, { likesCount: increment(-1) });
+          transaction.delete(likeRef);
+          transaction.update(dishDocRef, { likesCount: increment(-1) });
         } else {
-            transaction.set(likeRef, { createdAt: serverTimestamp() });
-            transaction.update(dishDocRef, { likesCount: increment(1) });
+          transaction.set(likeRef, { createdAt: serverTimestamp() });
+          transaction.update(dishDocRef, { likesCount: increment(1) });
         }
-    });
+      });
+    } catch (error) {
+      console.error("Like transaction failed: ", error);
+      toast({
+        title: "Error",
+        description: "Could not update your like. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLiking(false);
+    }
   };
   
   const handleCommentSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (newComment.trim() && user && firestore && dish) {
+    if (!newComment.trim() || !user || !firestore || isSubmittingComment) return;
+
+    setIsSubmittingComment(true);
+    try {
       await addDoc(collection(firestore, 'dishes', id, 'comments'), {
         dishId: id,
         userId: user.uid,
@@ -71,6 +122,11 @@ export default function DishDetailPage() {
         createdAt: serverTimestamp(),
       });
       setNewComment("");
+    } catch(error) {
+       console.error("Failed to submit comment: ", error);
+       toast({ title: "Error", description: "Could not post your comment.", variant: "destructive"});
+    } finally {
+      setIsSubmittingComment(false);
     }
   };
   
@@ -95,37 +151,12 @@ export default function DishDetailPage() {
   };
 
   if (isDishLoading) {
-    return (
-      <div className="container mx-auto max-w-5xl px-4 py-12">
-        <Card className="overflow-hidden">
-          <div className="grid md:grid-cols-2">
-            <Skeleton className="aspect-square md:aspect-auto h-full w-full min-h-[400px]" />
-            <div className="flex flex-col p-6 md:p-8">
-              <div className="flex items-center gap-3 mb-4">
-                <Skeleton className="h-12 w-12 rounded-full" />
-                <Skeleton className="h-6 w-32" />
-              </div>
-              <Skeleton className="h-10 w-3/4 mb-4" />
-              <Skeleton className="h-20 w-full mb-6" />
-              <div className="flex items-center gap-6 mb-6">
-                <Skeleton className="h-8 w-24" />
-                <Skeleton className="h-8 w-24" />
-              </div>
-              <Separator className="my-6" />
-              <Skeleton className="h-8 w-1/3 mb-4" />
-              <div className="space-y-4">
-                <Skeleton className="h-16 w-full" />
-                <Skeleton className="h-16 w-full" />
-              </div>
-            </div>
-          </div>
-        </Card>
-      </div>
-    );
+    return <DishDetailSkeleton />;
   }
 
   if (!dish) {
-    return notFound();
+    notFound();
+    return null;
   }
 
   const discountedPrice = dish.discount && dish.discount > 0 ? dish.price * (1 - dish.discount / 100) : dish.price;
@@ -168,9 +199,9 @@ export default function DishDetailPage() {
             <p className="text-muted-foreground mb-6 flex-grow">{dish.description}</p>
             
             <div className="flex items-center gap-6 text-muted-foreground mb-6">
-              <Button variant="outline" size="sm" className="flex items-center gap-2" onClick={handleLike} disabled={!user || isLikeLoading}>
-                <Heart className={`h-4 w-4 text-red-500 ${isLiked ? 'fill-current' : ''}`} />
-                <span>{likesCount} Likes</span>
+              <Button variant="outline" size="sm" className="flex items-center gap-2" onClick={handleLike} disabled={!user || isLiking || isLikeLoading}>
+                {isLiking ? <Loader2 className="h-4 w-4 animate-spin" /> : <Heart className={`h-4 w-4 text-red-500 ${isLiked ? 'fill-current' : ''}`} />}
+                <span>{dish.likesCount ?? 0} Likes</span>
               </Button>
               <div className="flex items-center gap-2">
                 <MessageSquare className="h-4 w-4" />
@@ -178,7 +209,7 @@ export default function DishDetailPage() {
               </div>
             </div>
 
-            <Button size="lg" onClick={handleAddToCart} disabled={!user}>
+            <Button size="lg" onClick={handleAddToCart}>
                 <ShoppingCart className="mr-2 h-5 w-5" />
                 Add to Cart
             </Button>
@@ -189,9 +220,11 @@ export default function DishDetailPage() {
               <h2 className="text-xl font-bold font-headline mb-4">Comments</h2>
               <div className="space-y-4 flex-grow max-h-60 overflow-y-auto pr-2">
                 {areCommentsLoading ? (
-                    <div className="text-sm text-muted-foreground">Loading comments...</div>
+                  <div className="flex items-center justify-center py-4">
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                  </div>
                 ) : comments && comments.length === 0 ? (
-                  <div className="text-sm text-muted-foreground">No comments yet.</div>
+                  <div className="text-sm text-center text-muted-foreground py-4">No comments yet. Be the first to comment!</div>
                 ) : (
                   comments?.map((comment) => (
                     <div key={comment.id} className="flex items-start gap-3">
@@ -215,9 +248,10 @@ export default function DishDetailPage() {
                     className="resize-none"
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
+                    disabled={isSubmittingComment}
                   />
-                  <Button type="submit" size="icon" disabled={!newComment.trim()}>
-                    <Send className="h-4 w-4" />
+                  <Button type="submit" size="icon" disabled={!newComment.trim() || isSubmittingComment}>
+                    {isSubmittingComment ? <Loader2 className="h-4 w-4 animate-spin"/> : <Send className="h-4 w-4" />}
                   </Button>
                 </form>
               ): (
@@ -232,7 +266,3 @@ export default function DishDetailPage() {
     </div>
   );
 }
-
-    
-
-    
