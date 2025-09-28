@@ -7,7 +7,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 15 }}
-      transition={{ ease: "easeInOut", duration: 0.5 }}
+      transition={{ type: "spring", stiffness: 100, damping: 20 }}
       className="flex-grow"
     >
       {children}

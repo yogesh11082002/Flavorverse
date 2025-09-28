@@ -18,7 +18,7 @@ export default function DishCard({ dish }: DishCardProps) {
 
   return (
     <motion.div
-      whileHover={{ y: -5 }}
+      whileHover={{ y: -5, scale: 1.03 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className="h-full"
     >
