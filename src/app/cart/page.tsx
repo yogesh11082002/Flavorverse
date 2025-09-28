@@ -5,7 +5,7 @@ import { useCart } from "@/context/cart-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
-import { Trash2, Plus, Minus, ShoppingCart } from "lucide-react";
+import { Trash2, Plus, Minus, ShoppingCart, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
@@ -23,10 +23,10 @@ export default function CartPage() {
   const handleCheckout = () => {
     toast({
       title: "Checkout Initiated",
-      description: "Thank you for your order! Redirecting to homepage.",
+      description: "Thank you for your order! Your cart has been cleared.",
     });
     clearCart();
-    router.push("/");
+    // No longer redirects to home page
   };
 
   if (cartItems.length === 0) {
@@ -102,8 +102,14 @@ export default function CartPage() {
                 <span>${total.toFixed(2)}</span>
               </div>
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex-col gap-2">
               <Button className="w-full" onClick={handleCheckout}>Proceed to Checkout</Button>
+              <Button variant="outline" className="w-full" asChild>
+                <Link href="/feed">
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Continue Shopping
+                </Link>
+              </Button>
             </CardFooter>
           </Card>
         </div>

@@ -11,6 +11,7 @@ import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { useCart } from "@/context/cart-context";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 type DishCardProps = {
   dish: Dish;
@@ -19,10 +20,19 @@ type DishCardProps = {
 export default function DishCard({ dish }: DishCardProps) {
   const { addToCart } = useCart();
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleAddToCart = () => {
     addToCart({ ...dish, price: dish.likes / 100 });
-    router.push('/cart');
+    toast({
+      title: "Added to Cart",
+      description: `${dish.name} has been added to your cart.`,
+      action: (
+        <Button variant="outline" size="sm" onClick={() => router.push('/cart')}>
+          View Cart
+        </Button>
+      ),
+    });
   };
   
   const originalPrice = (dish.likes / 100) * 1.5;
