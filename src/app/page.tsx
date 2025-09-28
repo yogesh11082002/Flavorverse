@@ -20,7 +20,7 @@ export default function Home() {
       <HeroSection />
       <PopularDishes />
       <FreshDeliciousDelivered />
-      <HowItWorksSection />
+      
       <div className="container mx-auto px-4 py-8">
         <TopCategories />
         <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
@@ -38,6 +38,7 @@ export default function Home() {
       <AboutUsSection />
       <Testimonials />
       <FeaturesBanner />
+      <HowItWorksSection />
     </div>
   );
 }

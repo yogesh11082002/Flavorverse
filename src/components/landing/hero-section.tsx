@@ -26,14 +26,15 @@ export function HeroSection() {
             >
               Fast Food
             </motion.p>
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="font-headline text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-white uppercase"
-            >
-              Fresh, Bold & Tasty
-            </motion.h1>
+           <motion.h1 
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5 }}
+  className="font-headline text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-wide leading-tight text-white uppercase"
+>
+  Fresh & Tasty
+</motion.h1>
+
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

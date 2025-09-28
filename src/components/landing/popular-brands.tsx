@@ -12,7 +12,7 @@ export function PopularBrands() {
     { name: 'Folgers', logo: PlaceHolderImages.find(p => p.id === 'brand-folgers') },
     { name: 'Fritos', logo: PlaceHolderImages.find(p => p.id === 'brand-fritos') },
     { name: 'Hardees', logo: PlaceHolderImages.find(p => p.id === 'brand-hardees') },
-    { name: 'KFC', logo: PlaceHolderImages.find(p => p.id === 'brand-kfc') },
+   
   ];
   return (
     <section className="w-full py-12">
