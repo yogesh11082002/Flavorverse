@@ -1,0 +1,170 @@
+/**
+ * @fileoverview Firestore Security Rules for FlavorVerse.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a user-ownership model for user profiles and their associated data (dishes, comments, likes).
+ * Users can only create, read, update, and delete their own profiles and associated content, with the exception of listing all dishes.
+ *
+ * Data Structure:
+ * - /users/{userId}: Stores user profiles. Only the authenticated user with matching userId can manage their profile.
+ * - /users/{userId}/dishes/{dishId}: Stores dishes created by a specific user.
+ * - /dishes/{dishId}: Stores all dishes to enable listing.
+ * - /dishes/{dishId}/comments/{commentId}: Stores comments for a specific dish.
+ * - /dishes/{dishId}/likes/{likeId}: Stores likes for a specific dish.
+ *
+ * Key Security Decisions:
+ * - Users can only manage their own profiles.
+ * - Listing all users is disallowed.
+ * - Dishes, comments, and likes are owned by the user who created them.
+ * - Public listing of all dishes is allowed, but individual write access is restricted to the owner.
+ *
+ * Denormalization for Authorization:
+ * - The `userId` field is included in all `dishes`, `comments`, and `likes` documents.
+ *   This avoids the need to perform `get()` operations on the `/users/{userId}` document to verify ownership.
+ *
+ * Structural Segregation:
+ * - User-specific data (e.g., dishes created by a user) is stored under the `/users/{userId}` path,
+ *   while general data (e.g., all dishes) resides in the `/dishes` collection.
+ *   This separation allows for different security rules to be applied to each type of data.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Checks if the request is authenticated.
+     * @returns {boolean} True if the request is authenticated, false otherwise.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * @description Checks if the request is made by the owner of the resource.
+     * @param {string} userId The user ID to compare with the request's auth UID.
+     * @returns {boolean} True if the request is made by the owner, false otherwise.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * @description Checks if the request is made by the existing owner of the resource.
+     * @param {string} userId The user ID to compare with the resource's userId.
+     * @returns {boolean} True if the request is made by the owner and the resource exists, false otherwise.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description
+     * Rules for the /users/{userId} collection. Enforces path-based ownership.
+     * @path /users/{userId}
+     * @allow (create) User with auth UID 'user_abc' can create their profile at /users/user_abc.
+     * @deny (create) User with auth UID 'user_xyz' cannot create a profile at /users/user_abc.
+     * @allow (get) User with auth UID 'user_abc' can get their profile at /users/user_abc.
+     * @deny (get) User with auth UID 'user_xyz' cannot get the profile at /users/user_abc.
+     * @allow (update) User with auth UID 'user_abc' can update their profile at /users/user_abc.
+     * @deny (update) User with auth UID 'user_xyz' cannot update the profile at /users/user_abc.
+     * @allow (delete) User with auth UID 'user_abc' can delete their profile at /users/user_abc.
+     * @deny (delete) User with auth UID 'user_xyz' cannot delete the profile at /users/user_abc.
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false; // Disallow listing all users.
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description
+     * Rules for the /users/{userId}/dishes/{dishId} collection. Enforces path-based ownership.
+     * @path /users/{userId}/dishes/{dishId}
+     * @allow (create) User with auth UID 'user_abc' can create a dish at /users/user_abc/dishes/dish_123.
+     * @deny (create) User with auth UID 'user_xyz' cannot create a dish at /users/user_abc/dishes/dish_123.
+     * @allow (get) User with auth UID 'user_abc' can get their dish at /users/user_abc/dishes/dish_123.
+     * @deny (get) User with auth UID 'user_xyz' cannot get the dish at /users/user_abc/dishes/dish_123.
+     * @allow (update) User with auth UID 'user_abc' can update their dish at /users/user_abc/dishes/dish_123.
+     * @deny (update) User with auth UID 'user_xyz' cannot update the dish at /users/user_abc/dishes/dish_123.
+     * @allow (delete) User with auth UID 'user_abc' can delete their dish at /users/user_abc/dishes/dish_123.
+     * @deny (delete) User with auth UID 'user_xyz' cannot delete the dish at /users/user_abc/dishes/dish_123.
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId}/dishes/{dishId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description
+     * Rules for the /dishes/{dishId}/comments/{commentId} collection. Enforces ownership via userId field in the document.
+     * @path /dishes/{dishId}/comments/{commentId}
+     * @allow (create) User with auth UID 'user_abc' can create a comment at /dishes/dish_123/comments/comment_456.
+     * @deny (create) User with auth UID 'user_xyz' cannot create a comment at /dishes/dish_123/comments/comment_456.
+     * @allow (get) User with auth UID 'user_abc' can get a comment at /dishes/dish_123/comments/comment_456.
+     * @deny (get) User with auth UID 'user_xyz' cannot get the comment at /dishes/dish_123/comments/comment_456.
+     * @allow (update) User with auth UID 'user_abc' can update their comment at /dishes/dish_123/comments/comment_456.
+     * @deny (update) User with auth UID 'user_xyz' cannot update the comment at /dishes/dish_123/comments/comment_456.
+     * @allow (delete) User with auth UID 'user_abc' can delete their comment at /dishes/dish_123/comments/comment_456.
+     * @deny (delete) User with auth UID 'user_xyz' cannot delete the comment at /dishes/dish_123/comments/comment_456.
+     * @principle Enforces document ownership for writes.
+     */
+    match /dishes/{dishId}/comments/{commentId} {
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow list: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isExistingOwner(resource.data.userId);
+      allow delete: if isExistingOwner(resource.data.userId);
+    }
+
+    /**
+     * @description
+     * Rules for the /dishes/{dishId}/likes/{likeId} collection. Enforces ownership via userId field in the document.
+     * @path /dishes/{dishId}/likes/{likeId}
+     * @allow (create) User with auth UID 'user_abc' can create a like at /dishes/dish_123/likes/like_456.
+     * @deny (create) User with auth UID 'user_xyz' cannot create a like at /dishes/dish_123/likes/like_456.
+     * @allow (get) User with auth UID 'user_abc' can get a like at /dishes/dish_123/likes/like_456.
+     * @deny (get) User with auth UID 'user_xyz' cannot get the like at /dishes/dish_123/likes/like_456.
+     * @allow (update) User with auth UID 'user_abc' can update their like at /dishes/dish_123/likes/like_456.
+     * @deny (update) User with auth UID 'user_xyz' cannot update the like at /dishes/dish_123/likes/like_456.
+     * @allow (delete) User with auth UID 'user_abc' can delete their like at /dishes/dish_123/likes/like_456.
+     * @deny (delete) User with auth UID 'user_xyz' cannot delete the like at /dishes/dish_123/likes/like_456.
+     * @principle Enforces document ownership for writes.
+     */
+    match /dishes/{dishId}/likes/{likeId} {
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow list: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isExistingOwner(resource.data.userId);
+      allow delete: if isExistingOwner(resource.data.userId);
+    }
+
+    /**
+     * @description
+     * Rules for the /dishes/{dishId} collection. Allows public read access and owner-only writes, based on the userId field.
+     * @path /dishes/{dishId}
+     * @allow (get) Any user can get a dish at /dishes/dish_123.
+     * @allow (list) Any user can list dishes at /dishes.
+     * @allow (create) User with auth UID 'user_abc' can create a dish at /dishes/dish_123 with dish.userId == 'user_abc'.
+     * @deny (create) User with auth UID 'user_xyz' cannot create a dish at /dishes/dish_123 with dish.userId != 'user_xyz'.
+     * @allow (update) User with auth UID 'user_abc' can update their dish at /dishes/dish_123 if resource.data.userId == 'user_abc'.
+     * @deny (update) User with auth UID 'user_xyz' cannot update dish at /dishes/dish_123 if resource.data.userId != 'user_xyz'.
+     * @allow (delete) User with auth UID 'user_abc' can delete their dish at /dishes/dish_123 if resource.data.userId == 'user_abc'.
+     * @deny (delete) User with auth UID 'user_xyz' cannot delete dish at /dishes/dish_123 if resource.data.userId != 'user_xyz'.
+     * @principle Allows public read access while enforcing document ownership for writes.
+     */
+    match /dishes/{dishId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isExistingOwner(resource.data.userId);
+      allow delete: if isExistingOwner(resource.data.userId);
+    }
+  }
+}

@@ -1,0 +1,249 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the FlavorVerse platform.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the User entity."
+        },
+        "username": {
+          "type": "string",
+          "description": "The user's chosen username."
+        },
+        "email": {
+          "type": "string",
+          "description": "The user's email address.",
+          "format": "email"
+        },
+        "profileImageUrl": {
+          "type": "string",
+          "description": "URL to the user's profile image.",
+          "format": "uri"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the user account was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "username",
+        "email"
+      ]
+    },
+    "Dish": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Dish",
+      "type": "object",
+      "description": "Represents a homemade dish shared on the FlavorVerse platform.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Dish entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the dish."
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the dish."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL to the image of the dish.",
+          "format": "uri"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the User who created the dish. (Relationship: User 1:N Dish)"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the dish was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "imageUrl",
+        "userId"
+      ]
+    },
+    "Comment": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Comment",
+      "type": "object",
+      "description": "Represents a comment on a dish.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Comment entity."
+        },
+        "dishId": {
+          "type": "string",
+          "description": "Reference to the Dish being commented on. (Relationship: Dish 1:N Comment)"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the User who wrote the comment. (Relationship: User 1:N Comment)"
+        },
+        "text": {
+          "type": "string",
+          "description": "The text content of the comment."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the comment was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "dishId",
+        "userId",
+        "text"
+      ]
+    },
+    "Like": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Like",
+      "type": "object",
+      "description": "Represents a like on a dish.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Like entity."
+        },
+        "dishId": {
+          "type": "string",
+          "description": "Reference to the Dish being liked. (Relationship: Dish 1:N Like)"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the User who liked the dish. (Relationship: User 1:N Like)"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the like was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "dishId",
+        "userId"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profiles. Path-based ownership.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/dishes/{dishId}",
+        "definition": {
+          "entityName": "Dish",
+          "schema": {
+            "$ref": "#/backend/entities/Dish"
+          },
+          "description": "Stores dishes created by a specific user. Path-based ownership. Includes denormalized 'userId' for authorization independence.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "dishId",
+              "description": "The unique identifier of the dish."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/dishes/{dishId}/comments/{commentId}",
+        "definition": {
+          "entityName": "Comment",
+          "schema": {
+            "$ref": "#/backend/entities/Comment"
+          },
+          "description": "Stores comments for a specific dish. Includes denormalized 'userId' for authorization independence.",
+          "params": [
+            {
+              "name": "dishId",
+              "description": "The unique identifier of the dish."
+            },
+            {
+              "name": "commentId",
+              "description": "The unique identifier of the comment."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/dishes/{dishId}/likes/{likeId}",
+        "definition": {
+          "entityName": "Like",
+          "schema": {
+            "$ref": "#/backend/entities/Like"
+          },
+          "description": "Stores likes for a specific dish. Includes denormalized 'userId' for authorization independence.",
+          "params": [
+            {
+              "name": "dishId",
+              "description": "The unique identifier of the dish."
+            },
+            {
+              "name": "likeId",
+              "description": "The unique identifier of the like."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/dishes/{dishId}",
+        "definition": {
+          "entityName": "Dish",
+          "schema": {
+            "$ref": "#/backend/entities/Dish"
+          },
+          "description": "General collection for all dishes, allowing listing and read access (subject to security rules). Includes denormalized 'userId' for authorization independence.",
+          "params": [
+            {
+              "name": "dishId",
+              "description": "The unique identifier of the dish."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to ensure security, scalability, and ease of debugging, following the principles of Authorization Independence, Clarity of Intent, and DBAC. It leverages denormalization and structural segregation to simplify security rules and enable efficient data retrieval. The design adheres to a consistent access modeling pattern, using path-based ownership for private data and membership maps for collaborative scenarios.\n\n1.  **Authorization Independence:** Critical user data like `userId` is embedded in the `dishes`, `comments`, and `likes` collections to avoid `get()` calls in security rules. This denormalization ensures that authorization checks can be performed independently at each level without needing to traverse the hierarchy to check user permissions, thus supporting atomic operations.\n\n2.  **Clarity of Intent (Debuggability):** The path structure clearly indicates ownership and relationships. For instance, `/users/{userId}/dishes/{dishId}` indicates that a dish is owned by a user. Similarly, comments and likes include the `userId` of the user who created them, clarifying the intent of each action.\n\n3.  **DBAC (No Custom Claims):** User roles and permissions are managed implicitly through document ownership and existence. The presence of a `userId` in a document signifies ownership, and the security rules enforce that only the owner can modify or delete their respective documents.\n\n4.  **QAPs (Rules are not Filters):** The structure supports secure list operations by segregating data based on ownership. Listing dishes under `/users/{userId}/dishes` is secured by the path itself. Additionally, the `dishes` collection allows listing all dishes while the security rules ensure that only authorized users can access sensitive data.\n\n5.  **Invariants:** Ownership of `dishes`, `comments` and `likes` is strictly enforced using `userId` field in all documents. Timestamps (`createdAt`) can be secured using rules to prevent client-side manipulation.\n\n**Denormalization Strategy:**\n*   The `userId` is included in all `dishes`, `comments`, and `likes` documents. This avoids the need to perform `get()` operations on the `/users/{userId}` document to verify ownership.\n\n**Structural Segregation:**\n*   User-specific data (e.g., dishes created by a user) is stored under the `/users/{userId}` path, while general data (e.g., all dishes) resides in the `/dishes` collection. This separation allows for different security rules to be applied to each type of data."
+  }
+}
