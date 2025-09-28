@@ -14,7 +14,7 @@ export function FreshDeliciousDelivered() {
             <Card className="p-8 rounded-2xl shadow-lg overflow-hidden">
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="relative h-96 md:h-full">
-                         {chefImage && <Image src={chefImage.imageUrl} alt="Chef" fill className="object-contain" data-ai-hint="chef mascot" />}
+                         {chefImage && <Image src={chefImage.imageUrl} alt={chefImage.description} fill className="object-contain" data-ai-hint={chefImage.imageHint} />}
                     </div>
                     <div>
                         <h2 className="font-headline text-lg font-semibold">Savor the Flavor, Anytime, Anywhere</h2>
