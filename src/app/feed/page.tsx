@@ -21,7 +21,7 @@ export default function FeedPage() {
   const dishesQuery = useMemoFirebase(() => {
     const baseQuery = collection(firestore, 'dishes');
     if (activeFilter === "All") {
-      return orderBy("createdAt", "desc");
+      return query(baseQuery, orderBy("createdAt", "desc"));
     }
     return query(baseQuery, where("category", "==", activeFilter), orderBy("createdAt", "desc"));
   }, [firestore, activeFilter]);
