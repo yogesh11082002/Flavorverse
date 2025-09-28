@@ -27,7 +27,7 @@ import {
 const DishSchema = z.object({
   name: z.string().min(3, { message: "Dish name must be at least 3 characters." }),
   description: z.string().min(10, { message: "Description must be at least 10 characters." }),
-  image: z.string(), // We'll handle file upload separately, for now this is a placeholder URL
+  image: z.any(), // Allow any file type
   category: z.enum(["Trending", "Latest", "Popular"]),
 });
 
@@ -37,13 +37,14 @@ export default function UploadPage() {
   const firestore = useFirestore();
   const { user, isUserLoading } = useUser();
   const router = useRouter();
+  const [fileName, setFileName] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof DishSchema>>({
     resolver: zodResolver(DishSchema),
     defaultValues: {
       name: "",
       description: "",
-      image: PlaceHolderImages[0].imageUrl,
+      category: "Latest",
     },
   });
 
@@ -52,6 +53,17 @@ export default function UploadPage() {
       router.push('/login');
     }
   }, [user, isUserLoading, router]);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setFileName(file.name);
+      form.setValue("image", file);
+    } else {
+      setFileName(null);
+      form.setValue("image", null);
+    }
+  };
 
   const onSubmit = async (values: z.infer<typeof DishSchema>) => {
     if (!user) {
@@ -81,7 +93,7 @@ export default function UploadPage() {
             imageHint: 'user profile',
         },
         userId: user.uid,
-        likes: 0,
+        likesCount: 0,
         commentsCount: 0,
         createdAt: serverTimestamp(),
       });
@@ -197,8 +209,14 @@ export default function UploadPage() {
                         <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-muted hover:bg-accent">
                             <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                 <Upload className="w-8 h-8 mb-4 text-muted-foreground" />
-                                <p className="mb-2 text-sm text-muted-foreground"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                                <p className="text-xs text-muted-foreground">PNG, JPG, GIF up to 10MB</p>
+                                {fileName ? (
+                                    <p className="font-semibold text-primary">{fileName}</p>
+                                ) : (
+                                    <>
+                                        <p className="mb-2 text-sm text-muted-foreground"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+                                        <p className="text-xs text-muted-foreground">PNG, JPG, GIF up to 10MB</p>
+                                    </>
+                                )}
                                 <p className="text-xs text-muted-foreground mt-2">(Image upload is simulated, a random image will be used)</p>
                             </div>
                             <Input 
@@ -206,7 +224,7 @@ export default function UploadPage() {
                               type="file" 
                               className="hidden" 
                               accept="image/*"
-                              disabled
+                              onChange={handleFileChange}
                             />
                         </label>
                       </div> 
