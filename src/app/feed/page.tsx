@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import DishCard from "@/components/dish-card";
 import type { Dish } from "@/lib/types";
-import { dishes as staticDishes } from "@/lib/data";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query, where, orderBy } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type Filter = "All" | "Trending" | "Latest" | "Popular";
@@ -15,19 +16,22 @@ type Filter = "All" | "Trending" | "Latest" | "Popular";
 export default function FeedPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeFilter, setActiveFilter] = useState<Filter>("All");
+  const firestore = useFirestore();
+
+  const dishesQuery = useMemoFirebase(() => {
+    const baseQuery = collection(firestore, 'dishes');
+    if (activeFilter === "All") {
+      return orderBy("createdAt", "desc");
+    }
+    return query(baseQuery, where("category", "==", activeFilter), orderBy("createdAt", "desc"));
+  }, [firestore, activeFilter]);
   
-  // Use static data for now
-  const dishes = staticDishes;
-  const isLoading = false;
+  const { data: dishes, isLoading } = useCollection<Dish>(dishesQuery);
 
   const filteredDishes = useMemo(() => {
     if (!dishes) return [];
     
     let results = dishes;
-
-    if (activeFilter !== "All") {
-        results = results.filter(dish => dish.category === activeFilter);
-    }
     
     if (searchTerm) {
       results = results.filter(dish => 
@@ -37,7 +41,7 @@ export default function FeedPage() {
     }
     
     return results;
-  }, [searchTerm, dishes, activeFilter]);
+  }, [searchTerm, dishes]);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -86,7 +90,7 @@ export default function FeedPage() {
       ) : (
         <div className="text-center py-20">
           <p className="text-xl font-semibold text-foreground">No dishes found</p>
-          <p className="text-muted-foreground mt-2">Try adjusting your search or filter.</p>
+          <p className="text-muted-foreground mt-2">Try adjusting your search or filter, or be the first to upload a dish!</p>
         </div>
       )}
     </div>
