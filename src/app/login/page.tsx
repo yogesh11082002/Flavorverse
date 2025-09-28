@@ -60,6 +60,7 @@ export default function LoginPage() {
   });
 
   const onLogin = async (values: z.infer<typeof LoginSchema>) => {
+    if (!auth) return;
     setIsLoading(true);
     try {
       await signInWithEmailAndPassword(auth, values.email, values.password);
@@ -77,6 +78,7 @@ export default function LoginPage() {
   };
 
   const onSignup = async (values: z.infer<typeof SignupSchema>) => {
+    if (!auth || !firestore) return;
     setIsLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
@@ -84,8 +86,11 @@ export default function LoginPage() {
 
       const displayName = values.email.split('@')[0];
       const photoURL = PlaceHolderImages.find(p => p.id === 'author-1')?.imageUrl || '';
+      
+      // This updates the Firebase Auth user profile
       await updateProfile(newUser, { displayName, photoURL });
 
+      // This creates the user document in Firestore
       const userRef = doc(firestore, 'users', newUser.uid);
       const userData = {
         email: newUser.email,
@@ -94,10 +99,12 @@ export default function LoginPage() {
         createdAt: serverTimestamp(),
       };
 
+      // Use a non-blocking write to avoid UI stalls and handle errors gracefully
       setDocumentNonBlocking(userRef, userData, { merge: false });
       
-      toast({ title: "Signup Successful", description: "Welcome! Please log in." });
-      setActiveTab("login");
+      toast({ title: "Signup Successful", description: "Welcome! You are now logged in." });
+      // Redirect to home after successful signup
+      router.push("/");
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -217,3 +224,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+    

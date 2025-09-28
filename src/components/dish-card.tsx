@@ -11,6 +11,8 @@ import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { useCart } from "@/context/cart-context";
 import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@/firebase";
+import { useRouter } from "next/navigation";
 
 type DishCardProps = {
   dish: Dish;
@@ -19,6 +21,8 @@ type DishCardProps = {
 export default function DishCard({ dish }: DishCardProps) {
   const { addToCart } = useCart();
   const { toast } = useToast();
+  const { user } = useUser();
+  const router = useRouter();
 
   const likesCount = dish.likesCount ?? 0;
 
@@ -27,6 +31,15 @@ export default function DishCard({ dish }: DishCardProps) {
   const originalPrice = price * 1.5;
 
   const handleAddToCart = () => {
+    if (!user) {
+        toast({
+            title: "Please log in",
+            description: "You need to be logged in to add items to your cart.",
+            variant: "destructive",
+        });
+        router.push("/login");
+        return;
+    }
     // We only pass the necessary dish info, price is part of it.
     // The quantity is handled by the cart context.
     addToCart({ ...dish, price });
@@ -84,3 +97,5 @@ export default function DishCard({ dish }: DishCardProps) {
     </motion.div>
   );
 }
+
+    
