@@ -1,7 +1,7 @@
 
 "use client";
 
-import { notFound, useRouter } from 'next/navigation';
+import { notFound, useRouter, useParams } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card } from '@/components/ui/card';
 import { dishes } from '@/lib/data';
@@ -10,8 +10,11 @@ import { useUser } from '@/firebase';
 import { useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Mail } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-export default function ProfilePage({ params }: { params: { username: string } }) {
+export default function ProfilePage() {
+  const params = useParams();
+  const username = params.username as string;
   const { user, isUserLoading } = useUser();
   const router = useRouter();
 
@@ -23,7 +26,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
   }, [user, isUserLoading, router]);
 
   // A different user's profile is being viewed
-  const isViewingOtherProfile = user?.email && params.username !== 'user' && params.username.toLowerCase() !== user.email.split('@')[0];
+  const isViewingOtherProfile = user?.email && username && username !== 'user' && username.toLowerCase() !== user.email.split('@')[0];
 
   if (isUserLoading || (!user && !isViewingOtherProfile)) {
     return (
@@ -57,8 +60,8 @@ export default function ProfilePage({ params }: { params: { username: string } }
     'johnsmith': { name: 'John Smith', bio: 'Grill master and comfort food enthusiast.', image: 'https://images.unsplash.com/photo-1624395213043-fa2e123b2656?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTg5NTE1NDl8MA&ixlibrb-4.1.0&q=80&w=1080' },
   };
 
-  const profileData = isViewingOtherProfile 
-    ? staticUsers[params.username.toLowerCase()]
+  const profileData = isViewingOtherProfile && username
+    ? staticUsers[username.toLowerCase()]
     : {
       name: user?.displayName || user?.email?.split('@')[0] || 'User',
       bio: 'Lover of food and culinary adventures.',
