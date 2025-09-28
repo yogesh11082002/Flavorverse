@@ -82,9 +82,17 @@ export default function ProfilePage() {
         </div>
       </Card>
 
-      <h2 className="font-headline text-3xl font-bold mb-8">
-        {isMyProfile ? "My Uploaded Dishes" : `${profileData.name}'s Dishes`} ({areDishesLoading ? '...' : userDishes?.length || 0})
-      </h2>
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="font-headline text-3xl font-bold">
+            {isMyProfile ? "My Uploaded Dishes" : `${profileData.name}'s Dishes`} ({areDishesLoading ? '...' : userDishes?.length || 0})
+        </h2>
+        {isMyProfile && (
+            <Button asChild>
+                <Link href="/upload">Upload Dish</Link>
+            </Button>
+        )}
+      </div>
+
 
       {areDishesLoading ? (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -100,11 +108,6 @@ export default function ProfilePage() {
         <div className="text-center py-20 bg-muted rounded-lg">
           <p className="text-xl font-semibold text-foreground">No dishes yet</p>
           <p className="text-muted-foreground mt-2">{isMyProfile ? 'You haven\'t uploaded any dishes yet.' : 'This user hasn\'t shared any dishes.'}</p>
-          {isMyProfile && (
-            <Button asChild className="mt-6">
-                <Link href="/upload">Upload Your First Dish</Link>
-            </Button>
-          )}
         </div>
       )}
     </div>

@@ -55,16 +55,14 @@ export default function DishCard({ dish }: DishCardProps) {
       className="h-full"
     >
       <Card className="overflow-hidden h-full flex flex-col group border hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl">
-          <div className="relative aspect-video overflow-hidden">
-             <Link href={`/dish/${dish.id}`} className="block w-full h-full">
-                <Image
-                    src={dish.image.imageUrl}
-                    alt={dish.name}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-110"
-                    data-ai-hint={dish.image.imageHint}
-                />
-             </Link>
+          <Link href={`/dish/${dish.id}`} className="block relative aspect-video overflow-hidden">
+            <Image
+                src={dish.image.imageUrl}
+                alt={dish.name}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-110"
+                data-ai-hint={dish.image.imageHint}
+            />
              <div className="absolute top-2 right-2 flex items-center gap-1">
                 {dish.category === 'Popular' && <Badge variant="destructive">HOT</Badge>}
                 {discount > 0 && <Badge variant="secondary">{discount}% OFF</Badge>}
@@ -73,7 +71,7 @@ export default function DishCard({ dish }: DishCardProps) {
                     <span className="font-bold">{likesCount}</span>
                 </Badge>
             </div>
-          </div>
+          </Link>
         <CardContent className="p-3 flex-grow flex flex-col">
           <h3 className="font-bold leading-tight text-md">
             <Link href={`/dish/${dish.id}`} className="hover:text-primary transition-colors">
