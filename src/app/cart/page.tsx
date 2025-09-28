@@ -8,26 +8,13 @@ import Image from "next/image";
 import { Trash2, Plus, Minus, ShoppingCart, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
 
 export default function CartPage() {
-  const { cartItems, removeFromCart, updateQuantity, clearCart } = useCart();
-  const { toast } = useToast();
-  const router = useRouter();
+  const { cartItems, removeFromCart, updateQuantity } = useCart();
 
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const tax = subtotal * 0.05; // 5% tax
   const total = subtotal + tax;
-
-  const handleCheckout = () => {
-    toast({
-      title: "Checkout Initiated",
-      description: "Thank you for your order! Your cart has been cleared.",
-    });
-    clearCart();
-    // No longer redirects to home page
-  };
 
   if (cartItems.length === 0) {
     return (
@@ -103,7 +90,9 @@ export default function CartPage() {
               </div>
             </CardContent>
             <CardFooter className="flex-col gap-2">
-              <Button className="w-full" onClick={handleCheckout}>Proceed to Checkout</Button>
+               <Button className="w-full" asChild>
+                  <Link href="/checkout">Proceed to Checkout</Link>
+                </Button>
               <Button variant="outline" className="w-full" asChild>
                 <Link href="/feed">
                     <ArrowLeft className="mr-2 h-4 w-4" />
