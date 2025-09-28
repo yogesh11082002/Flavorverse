@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Mail } from 'lucide-react';
 
-export default function ProfilePage({ params: { username } }: { params: { username: string } }) {
+export default function ProfilePage({ params }: { params: { username: string } }) {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
 
@@ -23,7 +23,7 @@ export default function ProfilePage({ params: { username } }: { params: { userna
   }, [user, isUserLoading, router]);
 
   // A different user's profile is being viewed
-  const isViewingOtherProfile = user?.email && username !== 'user' && username.toLowerCase() !== user.email.split('@')[0];
+  const isViewingOtherProfile = user?.email && params.username !== 'user' && params.username.toLowerCase() !== user.email.split('@')[0];
 
   if (isUserLoading || (!user && !isViewingOtherProfile)) {
     return (
@@ -58,7 +58,7 @@ export default function ProfilePage({ params: { username } }: { params: { userna
   };
 
   const profileData = isViewingOtherProfile 
-    ? staticUsers[username.toLowerCase()]
+    ? staticUsers[params.username.toLowerCase()]
     : {
       name: user?.displayName || user?.email?.split('@')[0] || 'User',
       bio: 'Lover of food and culinary adventures.',
