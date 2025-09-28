@@ -154,6 +154,7 @@ export default function DishDetailPage() {
     return <DishDetailSkeleton />;
   }
 
+  // After loading, if there's no dish, show a "not found" page.
   if (!dish) {
     notFound();
     return null;
@@ -266,3 +267,5 @@ export default function DishDetailPage() {
     </div>
   );
 }
+
+    
