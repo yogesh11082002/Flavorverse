@@ -101,4 +101,3 @@ export default function DishCard({ dish }: DishCardProps) {
     </motion.div>
   );
 }
-
