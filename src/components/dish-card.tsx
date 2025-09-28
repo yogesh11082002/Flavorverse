@@ -5,14 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Heart, Star } from "lucide-react";
-import type { Dish, Like } from "@/lib/types";
+import type { Dish } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { useCart } from "@/context/cart-context";
 import { useToast } from "@/hooks/use-toast";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection } from "firebase/firestore";
 
 type DishCardProps = {
   dish: Dish;
@@ -21,17 +19,16 @@ type DishCardProps = {
 export default function DishCard({ dish }: DishCardProps) {
   const { addToCart } = useCart();
   const { toast } = useToast();
-  const firestore = useFirestore();
 
-  const likesQuery = useMemoFirebase(() => collection(firestore, 'dishes', dish.id, 'likes'), [firestore, dish.id]);
-  const { data: likes } = useCollection<Like>(likesQuery);
-  const likesCount = likes?.length ?? 0;
+  const likesCount = dish.likesCount ?? 0;
 
   // Price calculation might need adjustment based on your logic
   const price = likesCount > 0 ? (likesCount / 10) + 5 : 5.99;
   const originalPrice = price * 1.5;
 
   const handleAddToCart = () => {
+    // We only pass the necessary dish info, price is part of it.
+    // The quantity is handled by the cart context.
     addToCart({ ...dish, price });
     toast({
       title: "Added to Cart",

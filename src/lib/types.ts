@@ -1,4 +1,5 @@
 
+
 import type { ImagePlaceholder } from './placeholder-images';
 import type { Timestamp } from 'firebase/firestore';
 
@@ -20,6 +21,7 @@ export type Dish = {
   category: 'Trending' | 'Latest' | 'Popular';
   userId: string;
   createdAt: Timestamp;
+  likesCount?: number;
 };
 
 export type Comment = {
@@ -37,7 +39,8 @@ export type Like = {
     createdAt: Timestamp;
 }
 
-export type CartItem = Dish & {
+export type CartItem = Omit<Dish, 'id'> & {
+  id: string; // dishId is the id
   price: number;
   quantity: number;
 };

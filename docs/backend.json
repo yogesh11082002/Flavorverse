@@ -71,6 +71,10 @@
             "type": "string",
             "enum": ["Trending", "Latest", "Popular"]
         },
+        "likesCount": {
+          "type": "number",
+          "description": "Denormalized count of likes for efficient querying."
+        },
         "createdAt": {
           "type": "string",
           "description": "Timestamp indicating when the dish was created.",
@@ -141,6 +145,26 @@
       "required": [
         "createdAt"
       ]
+    },
+    "CartItem": {
+      "title": "Cart Item",
+      "description": "A dish that has been added to a user's shopping cart.",
+      "type": "object",
+      "properties": {
+        "quantity": { "type": "number" },
+        "price": { "type": "number" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "image": {
+          "type": "object",
+           "properties": {
+            "imageUrl": { "type": "string", "format": "uri" },
+            "imageHint": { "type": "string" }
+          }
+        },
+        "category": { "type": "string" }
+      },
+      "required": ["quantity", "price", "name", "image"]
     }
   },
   "auth": {
@@ -152,6 +176,10 @@
     "/users/{userId}": {
       "schema": { "$ref": "#/entities/User" },
       "description": "Stores public user profile information."
+    },
+    "/users/{userId}/cart/{dishId}": {
+      "schema": { "$ref": "#/entities/CartItem" },
+      "description": "Subcollection storing items in a user's shopping cart."
     },
     "/dishes/{dishId}": {
       "schema": { "$ref": "#/entities/Dish" },

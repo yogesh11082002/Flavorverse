@@ -29,7 +29,7 @@ const CheckoutSchema = z.object({
 });
 
 export default function CheckoutPage() {
-  const { cartItems, clearCart } = useCart();
+  const { cartItems, clearCart, isLoading: isCartLoading } = useCart();
   const { user } = useUser();
   const { toast } = useToast();
   const router = useRouter();
@@ -72,10 +72,19 @@ export default function CheckoutPage() {
     if (!user) {
         router.push('/login');
     }
-    if (cartItems.length === 0 && !isSubmitting) {
+    if (cartItems.length === 0 && !isSubmitting && !isCartLoading) {
         router.push("/feed");
     }
-  }, [user, cartItems, isSubmitting, router]);
+  }, [user, cartItems, isSubmitting, router, isCartLoading]);
+  
+  if (isCartLoading) {
+    return (
+        <div className="container mx-auto px-4 py-12 text-center">
+            <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary"/>
+            <h1 className="mt-4 text-2xl font-bold">Loading Checkout...</h1>
+        </div>
+    )
+  }
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -120,7 +129,7 @@ export default function CheckoutPage() {
                       <FormItem><FormLabel>CVC</FormLabel><FormControl><Input placeholder="•••" {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
                   </div>
-                  <Button type="submit" disabled={isSubmitting} className="w-full mt-6">
+                  <Button type="submit" disabled={isSubmitting || cartItems.length === 0} className="w-full mt-6">
                     {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Placing Order...</> : `Pay $${total.toFixed(2)}`}
                   </Button>
                 </form>

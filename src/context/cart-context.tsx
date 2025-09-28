@@ -1,12 +1,15 @@
 
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode, useEffect } from 'react';
 import type { CartItem } from '@/lib/types';
+import { useCollection, useFirestore, useUser, useMemoFirebase } from '@/firebase';
+import { collection, doc, setDoc, deleteDoc, runTransaction } from 'firebase/firestore';
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (item: Omit<CartItem, 'quantity'>) => void;
+  isLoading: boolean;
+  addToCart: (item: Omit<CartItem, 'quantity' | 'price'> & { price: number }) => void;
   removeFromCart: (itemId: string) => void;
   updateQuantity: (itemId: string, quantity: number) => void;
   clearCart: () => void;
@@ -15,42 +18,60 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const { user } = useUser();
+  const firestore = useFirestore();
+
+  const cartColRef = useMemoFirebase(
+    () => (user ? collection(firestore, 'users', user.uid, 'cart') : null),
+    [user, firestore]
+  );
   
-  const addToCart = (item: Omit<CartItem, 'quantity'>) => {
-    setCartItems(prevItems => {
-      const existingItem = prevItems.find(i => i.id === item.id);
-      if (existingItem) {
-        return prevItems.map(i =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-        );
-      }
-      return [...prevItems, { ...item, quantity: 1 }];
+  const { data: cartItems, isLoading } = useCollection<CartItem>(cartColRef);
+
+  const addToCart = async (item: Omit<CartItem, 'quantity'>) => {
+    if (!user) return;
+    const cartItemRef = doc(firestore, 'users', user.uid, 'cart', item.id);
+    
+    await runTransaction(firestore, async (transaction) => {
+        const sfDoc = await transaction.get(cartItemRef);
+        if (!sfDoc.exists()) {
+            transaction.set(cartItemRef, { ...item, quantity: 1 });
+        } else {
+            const newQuantity = sfDoc.data().quantity + 1;
+            transaction.update(cartItemRef, { quantity: newQuantity });
+        }
     });
   };
 
-  const removeFromCart = (itemId: string) => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
+  const removeFromCart = async (itemId: string) => {
+    if (!user) return;
+    const cartItemRef = doc(firestore, 'users', user.uid, 'cart', itemId);
+    await deleteDoc(cartItemRef);
   };
 
-  const updateQuantity = (itemId: string, quantity: number) => {
+  const updateQuantity = async (itemId: string, quantity: number) => {
+    if (!user) return;
+    const cartItemRef = doc(firestore, 'users', user.uid, 'cart', itemId);
     if (quantity <= 0) {
-      removeFromCart(itemId);
-      return;
+      await deleteDoc(cartItemRef);
+    } else {
+      await setDoc(cartItemRef, { quantity }, { merge: true });
     }
-    setCartItems(prevItems =>
-      prevItems.map(item =>
-        item.id === itemId ? { ...item, quantity } : item
-      )
-    );
   };
 
-  const clearCart = () => {
-    setCartItems([]);
+  const clearCart = async () => {
+    if (!user || !cartItems) return;
+    // Firestore doesn't have a bulk delete for subcollections on the client.
+    // We have to delete documents one by one.
+    const deletePromises = cartItems.map(item => {
+        const cartItemRef = doc(firestore, 'users', user.uid, 'cart', item.id);
+        return deleteDoc(cartItemRef);
+    });
+    await Promise.all(deletePromises);
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart }}>
+    <CartContext.Provider value={{ cartItems: cartItems || [], isLoading, addToCart, removeFromCart, updateQuantity, clearCart }}>
       {children}
     </CartContext.Provider>
   );

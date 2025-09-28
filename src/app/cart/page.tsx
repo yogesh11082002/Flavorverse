@@ -5,16 +5,25 @@ import { useCart } from "@/context/cart-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
-import { Trash2, Plus, Minus, ShoppingCart, ArrowLeft } from "lucide-react";
+import { Trash2, Plus, Minus, ShoppingCart, ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 
 export default function CartPage() {
-  const { cartItems, removeFromCart, updateQuantity } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, isLoading } = useCart();
 
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const tax = subtotal * 0.05; // 5% tax
   const total = subtotal + tax;
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-12 text-center">
+        <Loader2 className="mx-auto h-24 w-24 animate-spin text-muted-foreground" />
+        <h1 className="mt-8 font-headline text-4xl font-bold">Loading Your Cart...</h1>
+      </div>
+    );
+  }
 
   if (cartItems.length === 0) {
     return (
