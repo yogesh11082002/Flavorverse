@@ -13,8 +13,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/firebase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { useAuth, useFirestore } from "@/firebase";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 const LoginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email." }),
@@ -35,6 +37,7 @@ export default function LoginPage() {
   const { toast } = useToast();
   const router = useRouter();
   const auth = useAuth();
+  const firestore = useFirestore();
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
 
@@ -68,7 +71,23 @@ export default function LoginPage() {
   const onSignup = async (values: z.infer<typeof SignupSchema>) => {
     setIsLoading(true);
     try {
-      await createUserWithEmailAndPassword(auth, values.email, values.password);
+      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+      const user = userCredential.user;
+
+      // Set user profile
+      const displayName = values.email.split('@')[0];
+      const photoURL = PlaceHolderImages.find(p => p.id === 'author-1')?.imageUrl || '';
+      await updateProfile(user, { displayName, photoURL });
+
+      // Create user document in Firestore
+      const userRef = doc(firestore, 'users', user.uid);
+      await setDoc(userRef, {
+        email: user.email,
+        displayName: displayName,
+        photoURL: photoURL,
+        createdAt: serverTimestamp(),
+      });
+      
       toast({ title: "Signup Successful", description: "Welcome! Please log in." });
       setActiveTab("login");
     } catch (error: any) {

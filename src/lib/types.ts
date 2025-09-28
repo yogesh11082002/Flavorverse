@@ -2,6 +2,14 @@
 import type { ImagePlaceholder } from './placeholder-images';
 import type { Timestamp } from 'firebase/firestore';
 
+export type User = {
+  id: string;
+  email: string;
+  displayName: string;
+  photoURL: string;
+  createdAt: Timestamp;
+}
+
 export type Dish = {
   id: string;
   name: string;
@@ -11,7 +19,7 @@ export type Dish = {
   image: ImagePlaceholder;
   category: 'Trending' | 'Latest' | 'Popular';
   userId: string;
-  createdAt?: Timestamp;
+  createdAt: Timestamp;
 };
 
 export type Comment = {

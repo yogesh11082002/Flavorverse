@@ -10,7 +10,7 @@ import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import Link from 'next/link';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDoc, useCollection, useFirestore, useUser, useMemoFirebase } from '@/firebase';
 import type { Dish, Comment as CommentType } from '@/lib/types';
 import { doc, collection, addDoc, serverTimestamp, deleteDoc, setDoc } from 'firebase/firestore';
@@ -33,12 +33,12 @@ export default function DishDetailPage() {
   
   const [newComment, setNewComment] = useState("");
 
-  const isLiked = user ? likes?.some(like => like.id === user.uid) : false;
-  const likesCount = likes?.length || 0;
+  const isLiked = user && likes ? likes.some(like => like.id === user.uid) : false;
+  const likesCount = likes?.length ?? 0;
 
   const handleLike = async () => {
     if (!user || !dish) return;
-    const likeRef = doc(firestore, 'dishes', dish.id, 'likes', user.uid);
+    const likeRef = doc(firestore, 'dishes', id, 'likes', user.uid);
     if (isLiked) {
       await deleteDoc(likeRef);
     } else {
@@ -49,15 +49,12 @@ export default function DishDetailPage() {
   const handleCommentSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (newComment.trim() && user && dish) {
-      const comment: Omit<CommentType, 'id' | 'createdAt'> = {
-        dishId: dish.id,
+      await addDoc(collection(firestore, 'dishes', id, 'comments'), {
+        dishId: id,
         userId: user.uid,
-        author: user.displayName || user.email || 'Anonymous',
+        author: user.displayName || 'Anonymous',
         authorImage: user.photoURL || '',
         text: newComment,
-      };
-      await addDoc(collection(firestore, 'dishes', dish.id, 'comments'), {
-        ...comment,
         createdAt: serverTimestamp(),
       });
       setNewComment("");
@@ -98,8 +95,6 @@ export default function DishDetailPage() {
     return notFound();
   }
 
-  const authorUsername = dish.author.toLowerCase().replace(' ', '');
-
   return (
     <div className="container mx-auto max-w-5xl px-4 py-12">
       <Card className="overflow-hidden">
@@ -133,7 +128,7 @@ export default function DishDetailPage() {
               </Button>
               <div className="flex items-center gap-2">
                 <MessageSquare className="h-4 w-4" />
-                <span>{comments?.length || 0} Comments</span>
+                <span>{comments?.length ?? 0} Comments</span>
               </div>
             </div>
             
@@ -144,10 +139,10 @@ export default function DishDetailPage() {
               <div className="space-y-4 flex-grow max-h-60 overflow-y-auto pr-2">
                 {areCommentsLoading ? (
                     <div className="text-sm text-muted-foreground">Loading comments...</div>
-                ) : comments?.length === 0 ? (
+                ) : comments && comments.length === 0 ? (
                   <div className="text-sm text-muted-foreground">No comments yet.</div>
                 ) : (
-                  comments.map((comment) => (
+                  comments?.map((comment) => (
                     <div key={comment.id} className="flex items-start gap-3">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={comment.authorImage} alt={comment.author} />

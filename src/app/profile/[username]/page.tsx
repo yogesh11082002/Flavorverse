@@ -1,30 +1,29 @@
 
 "use client";
 
-import { notFound, useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card } from '@/components/ui/card';
 import DishCard from '@/components/dish-card';
-import { useUser, useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { useEffect } from 'react';
+import { useUser, useCollection, useFirestore, useMemoFirebase, useDoc } from '@/firebase';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { collection, query, where } from 'firebase/firestore';
-import type { Dish } from '@/lib/types';
+import { collection, query, where, doc } from 'firebase/firestore';
+import type { Dish, User as UserType } from '@/lib/types';
 import Link from 'next/link';
 
 export default function ProfilePage() {
   const params = useParams();
-  const usernameParam = params.username as string; // This is the userId from the URL
-  const { user, isUserLoading } = useUser();
+  const profileUserId = params.username as string;
+  const { user: currentUser, isUserLoading } = useUser();
   const firestore = useFirestore();
 
-  const isMyProfile = user?.uid === usernameParam || (usernameParam === 'user' && user);
-  const profileUserId = isMyProfile ? user?.uid : usernameParam;
-  
-  // This part would be enhanced by fetching user profile data from a 'users' collection
-  // For now, we simulate it based on auth state and dishes
+  const isMyProfile = currentUser?.uid === profileUserId;
+
+  const profileUserRef = useMemoFirebase(() => profileUserId ? doc(firestore, 'users', profileUserId) : null, [firestore, profileUserId]);
+  const { data: profileUser, isLoading: isProfileUserLoading } = useDoc<UserType>(profileUserRef);
+
   const dishesQuery = useMemoFirebase(() => {
     if (!profileUserId) return null;
     return query(collection(firestore, 'dishes'), where('userId', '==', profileUserId));
@@ -32,15 +31,9 @@ export default function ProfilePage() {
 
   const { data: userDishes, isLoading: areDishesLoading } = useCollection<Dish>(dishesQuery);
   
-  const profileData = {
-      name: isMyProfile ? (user?.displayName || user?.email?.split('@')[0]) : (userDishes?.[0]?.author || 'User'),
-      bio: 'Lover of food and culinary adventures.',
-      image: isMyProfile ? user?.photoURL : userDishes?.[0]?.authorImage.imageUrl,
-      email: isMyProfile ? user?.email : null,
-    };
-  
+  const isLoading = isUserLoading || isProfileUserLoading;
 
-  if (isUserLoading) {
+  if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-12">
         <Card className="mb-12 p-8">
@@ -59,6 +52,14 @@ export default function ProfilePage() {
       </div>
     );
   }
+
+  const profileData = {
+      name: profileUser?.displayName,
+      bio: 'Lover of food and culinary adventures.',
+      image: profileUser?.photoURL,
+      email: profileUser?.email,
+    };
+  
 
   return (
     <div className="container mx-auto px-4 py-12">
