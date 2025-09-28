@@ -1,13 +1,13 @@
+
 "use client";
 
 import { useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import DishCard from "@/components/dish-card";
 import type { Dish } from "@/lib/types";
-import { collection, query, where, orderBy } from "firebase/firestore";
+import { dishes as staticDishes } from "@/lib/data";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type Filter = "All" | "Trending" | "Latest" | "Popular";
@@ -15,32 +15,29 @@ type Filter = "All" | "Trending" | "Latest" | "Popular";
 export default function FeedPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeFilter, setActiveFilter] = useState<Filter>("All");
-  const firestore = useFirestore();
-
-  const dishesQuery = useMemoFirebase(() => {
-    let q = collection(firestore, 'dishes');
-
-    if (activeFilter !== "All") {
-      // Assuming 'category' and 'createdAt' fields exist in your documents
-      return query(q, where("category", "==", activeFilter), orderBy("createdAt", "desc"));
-    }
-    return query(q, orderBy("createdAt", "desc"));
-  }, [firestore, activeFilter]);
-
-  const { data: dishes, isLoading } = useCollection<Dish>(dishesQuery);
+  
+  // Use static data for now
+  const dishes = staticDishes;
+  const isLoading = false;
 
   const filteredDishes = useMemo(() => {
     if (!dishes) return [];
     
+    let results = dishes;
+
+    if (activeFilter !== "All") {
+        results = results.filter(dish => dish.category === activeFilter);
+    }
+    
     if (searchTerm) {
-      return dishes.filter(dish => 
+      results = results.filter(dish => 
         dish.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         dish.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
     
-    return dishes;
-  }, [searchTerm, dishes]);
+    return results;
+  }, [searchTerm, dishes, activeFilter]);
 
   return (
     <div className="container mx-auto px-4 py-8">
