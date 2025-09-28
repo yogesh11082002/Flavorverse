@@ -126,7 +126,7 @@ export default function ContactPage() {
                         <div>
                             <h3 className="text-xl font-semibold">Email Us</h3>
                             <p className="text-muted-foreground">For general inquiries, support, or feedback.</p>
-                            <a href="mailto:contact@goodfood.com" className="text-primary font-medium hover:underline">contact@goodfood.com</a>
+                            <a href="mailto:contact@flavorverse.com" className="text-primary font-medium hover:underline">contact@flavorverse.com</a>
                         </div>
                     </div>
                     <div className="flex items-start gap-4">

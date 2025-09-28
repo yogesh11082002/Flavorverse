@@ -35,7 +35,7 @@ export default function Footer() {
                 </p>
                 <div className="mt-2 text-muted-foreground text-sm">
                     <p>Eco Food Court</p>
-                    <p>GoodFood Pvt Ltd</p>
+                    <p>FlavorVerse Pvt Ltd</p>
                 </div>
             </div>
 
@@ -89,7 +89,7 @@ export default function Footer() {
         </div>
         <div className="mt-12 pt-8 border-t flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground text-center md:text-left">
-            &copy; {new Date().getFullYear()} GoodFood Pvt Ltd. All rights reserved.
+            &copy; {new Date().getFullYear()} FlavorVerse Pvt Ltd. All rights reserved.
           </p>
           <div className="text-sm text-muted-foreground">
             <Link href="#" className="hover:text-primary">Terms & Conditions</Link>
