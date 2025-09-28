@@ -17,6 +17,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useCart } from "@/context/cart-context";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -94,6 +95,8 @@ function NavLinks({ isMobile, onLinkClick }: { isMobile?: boolean, onLinkClick?:
 
 export default function Header() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const { cartItems } = useCart();
+  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -106,8 +109,13 @@ export default function Header() {
           <Button variant="ghost" size="icon" className="hidden sm:inline-flex">
             <Search className="h-5 w-5" />
           </Button>
-           <Button variant="ghost" size="icon" className="hidden sm:inline-flex">
-            <ShoppingBag className="h-5 w-5" />
+           <Button variant="ghost" size="icon" className="hidden sm:inline-flex relative" asChild>
+            <Link href="/cart">
+              <ShoppingBag className="h-5 w-5" />
+              {totalItems > 0 && (
+                <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 justify-center p-0">{totalItems}</Badge>
+              )}
+            </Link>
           </Button>
 
           <DropdownMenu>
@@ -141,9 +149,11 @@ export default function Header() {
                       <Search className="h-5 w-5 mr-2" />
                       Search
                     </Button>
-                    <Button variant="outline">
-                      <ShoppingBag className="h-5 w-5 mr-2" />
-                      Cart
+                    <Button variant="outline" asChild>
+                       <Link href="/cart" onClick={() => setIsSheetOpen(false)}>
+                        <ShoppingBag className="h-5 w-5 mr-2" />
+                        Cart ({totalItems})
+                      </Link>
                     </Button>
                     <Button asChild className="font-bold rounded-lg w-full bg-blue-500 hover:bg-blue-600 text-white">
                         <Link href="/profile/user" onClick={() => setIsSheetOpen(false)}>

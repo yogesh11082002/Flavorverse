@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -8,12 +9,22 @@ import type { Dish } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
+import { useCart } from "@/context/cart-context";
+import { useRouter } from "next/navigation";
 
 type DishCardProps = {
   dish: Dish;
 };
 
 export default function DishCard({ dish }: DishCardProps) {
+  const { addToCart } = useCart();
+  const router = useRouter();
+
+  const handleAddToCart = () => {
+    addToCart({ ...dish, price: dish.likes / 100 });
+    router.push('/cart');
+  };
+  
   const originalPrice = (dish.likes / 100) * 1.5;
 
   return (
@@ -43,7 +54,7 @@ export default function DishCard({ dish }: DishCardProps) {
           </div>
         <CardContent className="p-3 flex-grow flex flex-col">
           <h3 className="font-bold leading-tight text-md">
-            <Link href={`/dish/${dish.id}`} className="hover:text-primary transition-colors stretched-link">
+            <Link href={`/dish/${dish.id}`} className="hover:text-primary transition-colors">
               {dish.name}
             </Link>
           </h3>
@@ -57,7 +68,7 @@ export default function DishCard({ dish }: DishCardProps) {
                     ${originalPrice.toFixed(2)}
                 </div>
             </div>
-            <Button size="sm" className="font-bold rounded-md text-lg w-10 h-10 p-0">+</Button>
+            <Button size="sm" className="font-bold rounded-md text-lg w-10 h-10 p-0" onClick={handleAddToCart}>+</Button>
           </div>
         </CardContent>
       </Card>

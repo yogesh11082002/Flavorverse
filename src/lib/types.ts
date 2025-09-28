@@ -1,3 +1,4 @@
+
 import type { ImagePlaceholder } from './placeholder-images';
 
 export type Dish = {
@@ -10,4 +11,9 @@ export type Dish = {
   likes: number;
   commentsCount: number;
   category: 'Trending' | 'Latest' | 'Popular';
+};
+
+export type CartItem = Dish & {
+  price: number;
+  quantity: number;
 };
