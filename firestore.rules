@@ -1,145 +1,47 @@
-/**
- * @file Firebase Security Rules for FlavorVerse
- * @version Prototyping Mode - Data shape is not strictly validated.
- *
- * @description This ruleset enforces a user-ownership model for user profiles and their associated dishes, comments, and likes.
- * Public read access is granted to the /dishes collection, but write access is restricted to owners.
- *
- * @dataStructure
- * - /users/{userId}: Stores user profiles, accessible only by the user themselves.
- * - /users/{userId}/dishes/{dishId}: Stores dishes created by a specific user, accessible only by the user.
- * - /dishes/{dishId}/comments/{commentId}: Stores comments on dishes, writeable by any authenticated user.
- * - /dishes/{dishId}/likes/{likeId}: Stores likes on dishes, writeable by any authenticated user.
- * - /dishes/{dishId}: Stores all dishes, with public read access and owner-only write access.
- *
- * @keySecurityDecisions
- * - Users can only read and write their own profile data.
- * - Users can only create, update, and delete dishes they own.
- * - Any authenticated user can create comments and likes on any dish.
- * - Public read access is granted to the /dishes collection, but only the owner can modify or delete a dish.
- * - Data shape validation is relaxed in this prototyping phase, focusing on authorization.
- *
- * @denormalizationForAuthorization
- * - The `userId` is included in all `dishes`, `comments`, and `likes` documents. This avoids the need to perform `get()` operations on the `/users/{userId}` document to verify ownership.
- *
- * @structuralSegregation
- * - User-specific data (e.g., dishes created by a user) is stored under the `/users/{userId}` path, while general data (e.g., all dishes) resides in the `/dishes` collection. This separation allows for different security rules to be applied to each type of data.
- */
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    /**
-     * @description Manages user profiles. Only the user can read and write their own profile data.
-     * @path /users/{userId}
-     * @allow (create) - User 'abc' can create their profile if request.auth.uid == 'abc'.
-     * @allow (get, update, delete) - User 'abc' can get, update, or delete their profile if request.auth.uid == 'abc'.
-     * @deny (create) - User 'def' cannot create profile 'abc'.
-     * @deny (update, delete) - User 'def' cannot update or delete profile 'abc'.
-     * @principle Enforces document ownership for user profiles.
-     */
+    // Helper function to check if a user is authenticated
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if a user is the owner of a document
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    // Users can only be created by the owner, and can't be deleted.
     match /users/{userId} {
-      function isOwner(userId) {
-        return request.auth != null && request.auth.uid == userId;
-      }
-      function isExistingOwner(userId) {
-        return isOwner(userId) && resource != null;
-      }
-
-      allow get: if isOwner(userId);
-      allow list: if false;
-      allow create: if isOwner(userId);
-      allow update: if isExistingOwner(userId);
-      allow delete: if isExistingOwner(userId);
+      allow read: if true;
+      allow create, update: if isOwner(userId);
+      allow delete: if false;
     }
 
-    /**
-     * @description Manages dishes created by a specific user.
-     * @path /users/{userId}/dishes/{dishId}
-     * @allow (create) - User 'abc' can create a dish under /users/abc/dishes if request.auth.uid == 'abc'.
-     * @allow (get, update, delete) - User 'abc' can get, update, or delete their dish under /users/abc/dishes if request.auth.uid == 'abc'.
-     * @deny (create) - User 'def' cannot create a dish under /users/abc/dishes.
-     * @deny (update, delete) - User 'def' cannot update or delete a dish under /users/abc/dishes.
-     * @principle Enforces ownership for dishes within a user's collection.
-     */
-    match /users/{userId}/dishes/{dishId} {
-        function isOwner(userId) {
-          return request.auth != null && request.auth.uid == userId;
-        }
-        function isExistingOwner(userId) {
-          return isOwner(userId) && resource != null;
-        }
-
-        allow get: if isOwner(userId);
-        allow list: if isOwner(userId);
-        allow create: if isOwner(userId);
-        allow update: if isExistingOwner(userId);
-        allow delete: if isExistingOwner(userId);
-    }
-
-    /**
-     * @description Manages comments for a specific dish. Any authenticated user can create comments.
-     * @path /dishes/{dishId}/comments/{commentId}
-     * @allow (create) - User 'abc' can create a comment on dish 'dish123' if request.auth.uid != null.
-     * @allow (get) - Any user can get a comment.
-     * @deny (update, delete) - Only the owner can update or delete the comment (not implemented).
-     * @principle Allows any authenticated user to create comments, but restricts updates and deletes.
-     */
-    match /dishes/{dishId}/comments/{commentId} {
-        function isSignedIn() {
-          return request.auth != null;
-        }
-
-        allow get: if true;
-        allow list: if true;
-        allow create: if isSignedIn();
-        allow update: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-        allow delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-    }
-
-    /**
-     * @description Manages likes for a specific dish. Any authenticated user can create a like.
-     * @path /dishes/{dishId}/likes/{likeId}
-     * @allow (create) - User 'abc' can create a like on dish 'dish123' if request.auth.uid != null.
-     * @allow (get) - Any user can get a like.
-     * @deny (update, delete) - Only the owner can update or delete the like (not implemented).
-     * @principle Allows any authenticated user to create likes, but restricts updates and deletes.
-     */
-    match /dishes/{dishId}/likes/{likeId} {
-        function isSignedIn() {
-          return request.auth != null;
-        }
-
-        allow get: if true;
-        allow list: if true;
-        allow create: if isSignedIn();
-        allow update: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-        allow delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-    }
-
-    /**
-     * @description Manages all dishes. Allows public read access, but restricts write access to the owner.
-     * @path /dishes/{dishId}
-     * @allow (get, list) - Any user can get or list dishes.
-     * @allow (create) - User 'abc' can create a dish if request.auth.uid == request.resource.data.userId.
-     * @allow (update, delete) - User 'abc' can update or delete dish 'dish123' if request.auth.uid == resource.data.userId.
-     * @deny (create) - User 'def' cannot create a dish with userId 'abc'.
-     * @deny (update, delete) - User 'def' cannot update or delete dish 'dish123' if resource.data.userId == 'abc'.
-     * @principle Allows public read access to dishes but enforces ownership for writes.
-     */
+    // Dishes can be read by anyone, but only created, updated, and
+    // deleted by the owner.
     match /dishes/{dishId} {
-        function isOwner(userId) {
-          return request.auth != null && request.auth.uid == userId;
-        }
-        function isExistingOwner(userId) {
-            return isOwner(userId) && resource != null;
-        }
+      allow read: if true;
+      allow create: if isSignedIn() && isOwner(request.resource.data.userId);
+      allow update, delete: if isSignedIn() && isOwner(resource.data.userId);
 
-        allow get: if true;
-        allow list: if true;
-        allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
-        allow update: if isExistingOwner(resource.data.userId);
-        allow delete: if isExistingOwner(resource.data.userId);
+      // Comments can be read by anyone, but only created by authenticated users.
+      // Users can only edit or delete their own comments.
+      match /dishes/{dishId}/comments/{commentId} {
+        allow read: if true;
+        allow create: if isSignedIn() && isOwner(request.resource.data.userId);
+        allow update, delete: if isSignedIn() && isOwner(resource.data.userId);
+      }
+
+      // Likes can be read by anyone.
+      // Users can only like/unlike for themselves. The like document ID must be the user's ID.
+      match /dishes/{dishId}/likes/{userId} {
+        allow read: if true;
+        allow create, delete: if isSignedIn() && isOwner(userId);
+        allow update: if false;
+      }
     }
   }
 }
