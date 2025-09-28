@@ -9,8 +9,6 @@ export type Dish = {
   author: string;
   authorImage: ImagePlaceholder;
   image: ImagePlaceholder;
-  likes: number;
-  commentsCount: number;
   category: 'Trending' | 'Latest' | 'Popular';
   userId: string;
   createdAt?: Timestamp;
@@ -27,7 +25,7 @@ export type Comment = {
 }
 
 export type Like = {
-    userId: string;
+    id: string;
     createdAt: Timestamp;
 }
 

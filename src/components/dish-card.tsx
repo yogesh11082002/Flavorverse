@@ -4,14 +4,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Star } from "lucide-react";
-import type { Dish } from "@/lib/types";
+import { Heart, Star } from "lucide-react";
+import type { Dish, Like } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { useCart } from "@/context/cart-context";
-import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection } from "firebase/firestore";
 
 type DishCardProps = {
   dish: Dish;
@@ -19,11 +20,15 @@ type DishCardProps = {
 
 export default function DishCard({ dish }: DishCardProps) {
   const { addToCart } = useCart();
-  const router = useRouter();
   const { toast } = useToast();
+  const firestore = useFirestore();
+
+  const likesQuery = useMemoFirebase(() => collection(firestore, 'dishes', dish.id, 'likes'), [firestore, dish.id]);
+  const { data: likes } = useCollection<Like>(likesQuery);
+  const likesCount = likes?.length ?? 0;
 
   // Price calculation might need adjustment based on your logic
-  const price = dish.likes ? (dish.likes / 100) : 5.99;
+  const price = likesCount > 0 ? (likesCount / 10) + 5 : 5.99;
   const originalPrice = price * 1.5;
 
   const handleAddToCart = () => {
@@ -31,11 +36,6 @@ export default function DishCard({ dish }: DishCardProps) {
     toast({
       title: "Added to Cart",
       description: `${dish.name} has been added to your cart.`,
-      action: (
-        <Button variant="outline" size="sm" onClick={() => router.push('/cart')}>
-          View Cart
-        </Button>
-      ),
     });
   };
 
@@ -58,9 +58,9 @@ export default function DishCard({ dish }: DishCardProps) {
              </Link>
              <div className="absolute top-2 right-2 flex items-center gap-1">
                 {dish.category === 'Popular' && <Badge variant="destructive">HOT</Badge>}
-                <Badge variant="outline" className="bg-background/80 backdrop-blur-sm">
-                    <Star className="h-3 w-3 fill-primary text-primary mr-1" />
-                    <span className="font-bold">4.6</span>
+                <Badge variant="outline" className="bg-background/80 backdrop-blur-sm flex items-center">
+                    <Heart className="h-3 w-3 fill-red-500 text-red-500 mr-1" />
+                    <span className="font-bold">{likesCount}</span>
                 </Badge>
             </div>
           </div>
