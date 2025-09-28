@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import Link from "next/link";
@@ -30,9 +31,8 @@ const navLinks = [
       { href: "/feed?filter=Latest", label: "Latest" },
     ]
   },
-  { href: "#", label: "Brand", isNew: true },
   { 
-    href: "/upload", 
+    href: "/feed", 
     label: "Shop", 
     isHot: true, 
     hasDropdown: true, 
@@ -41,7 +41,7 @@ const navLinks = [
         { href: "/feed", label: "Browse Dishes" },
     ] 
   },
-  { href: "#", label: "Contact" },
+  { href: "/contact", label: "Contact" },
 ];
 
 function NavLinks({ isMobile, onLinkClick }: { isMobile?: boolean, onLinkClick?: () => void }) {

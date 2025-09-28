@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import Logo from "./logo";
 import { Input } from "./ui/input";
@@ -6,14 +7,14 @@ import { Send } from "lucide-react";
 
 const footerLinks = {
     company: [
-        { name: "About Us", href: "#" },
-        { name: "Store", href: "#" },
+        { name: "About Us", href: "/contact" },
+        { name: "Store", href: "/feed" },
         { name: "FAQ", href: "#" }
     ],
     services: [
         { name: "Delivery", href: "#" },
         { name: "Payments", href: "#" },
-        { name: "Contact", href: "#" }
+        { name: "Contact", href: "/contact" }
     ],
     follow: [
         { name: "Instagram", href: "#" },
