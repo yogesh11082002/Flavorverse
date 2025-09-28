@@ -1,4 +1,3 @@
-
 "use client";
 
 import { notFound, useRouter } from 'next/navigation';
@@ -11,7 +10,8 @@ import { useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Mail } from 'lucide-react';
 
-export default function ProfilePage({ params: { username } }: { params: { username: string } }) {
+export default function ProfilePage({ params }: { params: { username: string } }) {
+  const { username } = params;
   const { user, isUserLoading } = useUser();
   const router = useRouter();
 
