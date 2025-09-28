@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -13,10 +13,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useAuth, useFirestore } from "@/firebase";
+import { useAuth, useFirestore, useUser } from "@/firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { setDocumentNonBlocking } from "@/firebase/non-blocking-updates";
 
 const LoginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email." }),
@@ -38,8 +39,15 @@ export default function LoginPage() {
   const router = useRouter();
   const auth = useAuth();
   const firestore = useFirestore();
+  const { user, isUserLoading } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
+
+  useEffect(() => {
+    if (!isUserLoading && user) {
+      router.push('/');
+    }
+  }, [user, isUserLoading, router]);
 
   const loginForm = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -72,21 +80,21 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-      const user = userCredential.user;
+      const newUser = userCredential.user;
 
-      // Set user profile
       const displayName = values.email.split('@')[0];
       const photoURL = PlaceHolderImages.find(p => p.id === 'author-1')?.imageUrl || '';
-      await updateProfile(user, { displayName, photoURL });
+      await updateProfile(newUser, { displayName, photoURL });
 
-      // Create user document in Firestore
-      const userRef = doc(firestore, 'users', user.uid);
-      await setDoc(userRef, {
-        email: user.email,
+      const userRef = doc(firestore, 'users', newUser.uid);
+      const userData = {
+        email: newUser.email,
         displayName: displayName,
         photoURL: photoURL,
         createdAt: serverTimestamp(),
-      });
+      };
+
+      setDocumentNonBlocking(userRef, userData, { merge: false });
       
       toast({ title: "Signup Successful", description: "Welcome! Please log in." });
       setActiveTab("login");
@@ -101,6 +109,13 @@ export default function LoginPage() {
     }
   };
 
+  if (isUserLoading || user) {
+    return (
+      <div className="container mx-auto flex items-center justify-center min-h-[calc(100vh-15rem)]">
+        <Loader2 className="h-12 w-12 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto flex items-center justify-center min-h-[calc(100vh-15rem)] px-4 py-12">
