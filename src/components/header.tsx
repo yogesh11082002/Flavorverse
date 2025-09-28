@@ -3,11 +3,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Logo from "./logo";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
-import { Search, ShoppingBag, Menu, ChevronDown, User } from "lucide-react";
+import { Search, ShoppingBag, Menu, ChevronDown, User, LogOut } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
@@ -16,8 +16,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import { useCart } from "@/context/cart-context";
+import { useUser } from "@/firebase";
+import { getAuth, signOut } from "firebase/auth";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -55,12 +58,12 @@ function NavLinks({ isMobile, onLinkClick }: { isMobile?: boolean, onLinkClick?:
   return (
     <>
       {navLinks.map((link) => {
+        const key = `${link.label}-${link.href}`;
         if (link.hasDropdown && link.dropdownItems) {
           return (
-             <DropdownMenu key={link.label}>
+             <DropdownMenu key={key}>
               <DropdownMenuTrigger className={cn(linkClass, pathname.startsWith(link.href) ? "text-primary" : "text-muted-foreground", "outline-none")}>
                 {link.label} 
-                {link.isNew && <Badge variant="outline" className="ml-1 bg-blue-100 text-blue-600 border-blue-300 text-xs px-1.5 py-0.5 h-auto">NEW</Badge>}
                 {link.isHot && <Badge variant="destructive" className="ml-1 border-none text-xs px-1.5 py-0.5 h-auto">HOT</Badge>}
                 <ChevronDown className="h-4 w-4" />
               </DropdownMenuTrigger>
@@ -74,7 +77,7 @@ function NavLinks({ isMobile, onLinkClick }: { isMobile?: boolean, onLinkClick?:
         }
         
         return (
-          <div key={link.label} className="relative">
+          <div key={key} className="relative">
             <Link
               href={link.href}
               onClick={onLinkClick}
@@ -96,7 +99,16 @@ function NavLinks({ isMobile, onLinkClick }: { isMobile?: boolean, onLinkClick?:
 export default function Header() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { cartItems } = useCart();
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  const handleLogout = async () => {
+    const auth = getAuth();
+    await signOut(auth);
+    router.push('/');
+  };
+
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -118,18 +130,40 @@ export default function Header() {
             </Link>
           </Button>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button className="font-bold rounded-lg px-6 hidden sm:inline-flex bg-blue-500 hover:bg-blue-600 text-white">
-                <User className="h-4 w-4 mr-2"/>
-                Login
+          {!isUserLoading && (
+            user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                     <Avatar className="h-8 w-8">
+                        {user.photoURL ? <AvatarImage src={user.photoURL} alt={user.displayName ?? 'User'} /> : <AvatarFallback>{user.email?.charAt(0).toUpperCase()}</AvatarFallback>}
+                     </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile/user">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>My Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Logout</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+               <Button asChild className="font-bold rounded-lg px-6 hidden sm:inline-flex bg-blue-500 hover:bg-blue-600 text-white">
+                <Link href="/login">
+                  <User className="h-4 w-4 mr-2"/>
+                  Login
+                </Link>
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem asChild><Link href="/profile/user">My Profile</Link></DropdownMenuItem>
-              <DropdownMenuItem>Logout</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            )
+          )}
+          
 
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
@@ -170,3 +204,6 @@ export default function Header() {
     </header>
   );
 }
+
+// Added Avatar components for user profile picture
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
