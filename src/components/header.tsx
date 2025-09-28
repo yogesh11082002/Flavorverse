@@ -56,7 +56,7 @@ function NavLinks({ isMobile, onLinkClick }: { isMobile?: boolean, onLinkClick?:
       {navLinks.map((link) => {
         if (link.hasDropdown && link.dropdownItems) {
           return (
-             <DropdownMenu key={link.href}>
+             <DropdownMenu key={link.label}>
               <DropdownMenuTrigger className={cn(linkClass, pathname.startsWith(link.href) ? "text-primary" : "text-muted-foreground", "outline-none")}>
                 {link.label} 
                 {link.isNew && <Badge variant="outline" className="ml-1 bg-blue-100 text-blue-600 border-blue-300 text-xs px-1.5 py-0.5 h-auto">NEW</Badge>}
@@ -73,7 +73,7 @@ function NavLinks({ isMobile, onLinkClick }: { isMobile?: boolean, onLinkClick?:
         }
         
         return (
-          <div key={link.href} className="relative">
+          <div key={link.label} className="relative">
             <Link
               href={link.href}
               onClick={onLinkClick}
