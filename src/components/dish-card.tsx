@@ -4,7 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Heart, Star } from "lucide-react";
+import { Heart } from "lucide-react";
 import type { Dish } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "./ui/button";
@@ -25,11 +25,11 @@ export default function DishCard({ dish }: DishCardProps) {
   const router = useRouter();
 
   const likesCount = dish.likesCount ?? 0;
+  const price = dish.price ?? 0;
+  const discount = dish.discount ?? 0;
 
-  // Price calculation might need adjustment based on your logic
-  const price = likesCount > 0 ? (likesCount / 10) + 5 : 5.99;
-  const originalPrice = price * 1.5;
-
+  const discountedPrice = discount > 0 ? price * (1 - discount / 100) : price;
+  
   const handleAddToCart = () => {
     if (!user) {
         toast({
@@ -40,9 +40,8 @@ export default function DishCard({ dish }: DishCardProps) {
         router.push("/login");
         return;
     }
-    // We only pass the necessary dish info, price is part of it.
-    // The quantity is handled by the cart context.
-    addToCart({ ...dish, price });
+    // We pass the final price to the cart.
+    addToCart({ ...dish, price: discountedPrice });
     toast({
       title: "Added to Cart",
       description: `${dish.name} has been added to your cart.`,
@@ -68,6 +67,7 @@ export default function DishCard({ dish }: DishCardProps) {
              </Link>
              <div className="absolute top-2 right-2 flex items-center gap-1">
                 {dish.category === 'Popular' && <Badge variant="destructive">HOT</Badge>}
+                {discount > 0 && <Badge variant="secondary">{discount}% OFF</Badge>}
                 <Badge variant="outline" className="bg-background/80 backdrop-blur-sm flex items-center">
                     <Heart className="h-3 w-3 fill-red-500 text-red-500 mr-1" />
                     <span className="font-bold">{likesCount}</span>
@@ -84,11 +84,13 @@ export default function DishCard({ dish }: DishCardProps) {
           <div className="flex justify-between items-end mt-auto">
             <div className="flex items-baseline gap-2">
                 <div className="font-headline text-lg font-bold text-foreground">
-                    ${price.toFixed(2)}
+                    ${discountedPrice.toFixed(2)}
                 </div>
-                <div className="text-sm text-muted-foreground line-through">
-                    ${originalPrice.toFixed(2)}
-                </div>
+                {discount > 0 && (
+                  <div className="text-sm text-muted-foreground line-through">
+                      ${price.toFixed(2)}
+                  </div>
+                )}
             </div>
             <Button size="sm" className="font-bold rounded-md text-lg w-10 h-10 p-0" onClick={handleAddToCart}>+</Button>
           </div>
@@ -97,5 +99,3 @@ export default function DishCard({ dish }: DishCardProps) {
     </motion.div>
   );
 }
-
-    

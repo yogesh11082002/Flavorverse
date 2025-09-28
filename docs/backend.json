@@ -71,6 +71,14 @@
             "type": "string",
             "enum": ["Trending", "Latest", "Popular"]
         },
+        "price": {
+            "type": "number",
+            "description": "The price of the dish."
+        },
+        "discount": {
+            "type": "number",
+            "description": "The discount percentage for the dish."
+        },
         "likesCount": {
           "type": "number",
           "description": "Denormalized count of likes for efficient querying."
@@ -89,6 +97,7 @@
         "author",
         "authorImage",
         "category",
+        "price",
         "createdAt"
       ]
     },

@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import React, { useEffect, useState } from "react";
-import { Upload, Loader2 } from "lucide-react";
+import { Upload, Loader2, DollarSign, Percent } from "lucide-react";
 import { useFirestore, useUser } from "@/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { useRouter } from "next/navigation";
@@ -29,6 +29,8 @@ const DishSchema = z.object({
   description: z.string().min(10, { message: "Description must be at least 10 characters." }),
   image: z.any(), // Allow any file type
   category: z.enum(["Trending", "Latest", "Popular"]),
+  price: z.coerce.number().min(0, { message: "Price must be a positive number." }),
+  discount: z.coerce.number().min(0).max(100).optional(),
 });
 
 export default function UploadPage() {
@@ -45,6 +47,8 @@ export default function UploadPage() {
       name: "",
       description: "",
       category: "Latest",
+      price: 0,
+      discount: 0,
     },
   });
 
@@ -83,6 +87,8 @@ export default function UploadPage() {
         name: values.name,
         description: values.description,
         category: values.category,
+        price: values.price,
+        discount: values.discount || 0,
         image: {
             imageUrl: imagePlaceholder.imageUrl,
             imageHint: imagePlaceholder.imageHint,
@@ -174,6 +180,41 @@ export default function UploadPage() {
                   </FormItem>
                 )}
               />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Price</FormLabel>
+                      <div className="relative">
+                        <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <FormControl>
+                          <Input type="number" placeholder="0.00" className="pl-8" {...field} />
+                        </FormControl>
+                      </div>
+                      <FormMessage/>
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="discount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Discount (%)</FormLabel>
+                       <div className="relative">
+                        <Percent className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <FormControl>
+                          <Input type="number" placeholder="0-100" className="pl-8" {...field} />
+                        </FormControl>
+                      </div>
+                      <FormMessage/>
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <FormField
                 control={form.control}

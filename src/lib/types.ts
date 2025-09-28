@@ -22,6 +22,8 @@ export type Dish = {
   userId: string;
   createdAt: Timestamp;
   likesCount?: number;
+  price: number;
+  discount?: number; // Percentage
 };
 
 export type Comment = {

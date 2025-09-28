@@ -5,7 +5,7 @@ import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Heart, MessageSquare, Send } from 'lucide-react';
+import { Heart, MessageSquare, Send, ShoppingCart } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
@@ -13,14 +13,20 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { useDoc, useCollection, useFirestore, useUser, useMemoFirebase } from '@/firebase';
 import type { Dish, Comment as CommentType } from '@/lib/types';
-import { doc, collection, addDoc, serverTimestamp, deleteDoc, setDoc } from 'firebase/firestore';
+import { doc, collection, addDoc, serverTimestamp, deleteDoc, setDoc, runTransaction, increment } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useCart } from '@/context/cart-context';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
 export default function DishDetailPage() {
   const params = useParams();
   const id = params.id as string;
   const firestore = useFirestore();
   const { user } = useUser();
+  const { addToCart } = useCart();
+  const { toast } = useToast();
+  const router = useRouter();
 
   const dishRef = useMemoFirebase(() => doc(firestore, 'dishes', id), [firestore, id]);
   const { data: dish, isLoading: isDishLoading } = useDoc<Dish>(dishRef);
@@ -28,22 +34,29 @@ export default function DishDetailPage() {
   const commentsQuery = useMemoFirebase(() => collection(firestore, 'dishes', id, 'comments'), [firestore, id]);
   const { data: comments, isLoading: areCommentsLoading } = useCollection<CommentType>(commentsQuery);
 
-  const likesRef = useMemoFirebase(() => collection(firestore, 'dishes', id, 'likes'), [firestore, id]);
-  const { data: likes, isLoading: areLikesLoading } = useCollection(likesRef);
+  const likesRef = useMemoFirebase(() => (user ? doc(firestore, 'dishes', id, 'likes', user.uid) : null), [firestore, id, user]);
+  const { data: likeDoc, isLoading: isLikeLoading } = useDoc(likesRef);
   
   const [newComment, setNewComment] = useState("");
 
-  const isLiked = user && likes ? likes.some(like => like.id === user.uid) : false;
-  const likesCount = likes?.length ?? 0;
+  const isLiked = !!likeDoc;
+  const likesCount = dish?.likesCount ?? 0;
 
   const handleLike = async () => {
     if (!user || !dish) return;
     const likeRef = doc(firestore, 'dishes', id, 'likes', user.uid);
-    if (isLiked) {
-      await deleteDoc(likeRef);
-    } else {
-      await setDoc(likeRef, { createdAt: serverTimestamp() });
-    }
+    const dishDocRef = doc(firestore, 'dishes', id);
+
+    await runTransaction(firestore, async (transaction) => {
+        const likeDoc = await transaction.get(likeRef);
+        if (likeDoc.exists()) {
+            transaction.delete(likeRef);
+            transaction.update(dishDocRef, { likesCount: increment(-1) });
+        } else {
+            transaction.set(likeRef, { createdAt: serverTimestamp() });
+            transaction.update(dishDocRef, { likesCount: increment(1) });
+        }
+    });
   };
   
   const handleCommentSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -59,6 +72,26 @@ export default function DishDetailPage() {
       });
       setNewComment("");
     }
+  };
+  
+  const handleAddToCart = () => {
+    if (!user) {
+        toast({
+            title: "Please log in",
+            description: "You need to be logged in to add items to your cart.",
+            variant: "destructive",
+        });
+        router.push("/login");
+        return;
+    }
+    if (!dish) return;
+    
+    const price = dish.discount ? dish.price * (1 - dish.discount / 100) : dish.price;
+    addToCart({ ...dish, price });
+    toast({
+      title: "Added to Cart",
+      description: `${dish.name} has been added to your cart.`,
+    });
   };
 
   if (isDishLoading) {
@@ -95,6 +128,8 @@ export default function DishDetailPage() {
     return notFound();
   }
 
+  const discountedPrice = dish.discount ? dish.price * (1 - dish.discount / 100) : dish.price;
+
   return (
     <div className="container mx-auto max-w-5xl px-4 py-12">
       <Card className="overflow-hidden">
@@ -118,11 +153,19 @@ export default function DishDetailPage() {
                 <span className="font-semibold group-hover:text-primary transition-colors">{dish.author}</span>
               </Link>
             </div>
-            <h1 className="font-headline text-3xl md:text-4xl font-bold mb-4">{dish.name}</h1>
+            <h1 className="font-headline text-3xl md:text-4xl font-bold mb-2">{dish.name}</h1>
+
+            <div className="flex items-baseline gap-2 mb-4">
+              <span className="font-headline text-3xl font-bold text-primary">${discountedPrice.toFixed(2)}</span>
+              {dish.discount && dish.discount > 0 && (
+                <span className="text-xl font-medium text-muted-foreground line-through">${dish.price.toFixed(2)}</span>
+              )}
+            </div>
+
             <p className="text-muted-foreground mb-6 flex-grow">{dish.description}</p>
             
             <div className="flex items-center gap-6 text-muted-foreground mb-6">
-              <Button variant="outline" size="sm" className="flex items-center gap-2" onClick={handleLike} disabled={!user || areLikesLoading}>
+              <Button variant="outline" size="sm" className="flex items-center gap-2" onClick={handleLike} disabled={!user || isLikeLoading}>
                 <Heart className={`h-4 w-4 text-red-500 ${isLiked ? 'fill-current' : ''}`} />
                 <span>{likesCount} Likes</span>
               </Button>
@@ -131,6 +174,11 @@ export default function DishDetailPage() {
                 <span>{comments?.length ?? 0} Comments</span>
               </div>
             </div>
+
+            <Button size="lg" onClick={handleAddToCart} disabled={!user}>
+                <ShoppingCart className="mr-2 h-5 w-5" />
+                Add to Cart
+            </Button>
             
             <Separator className="my-6" />
 
