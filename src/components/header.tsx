@@ -41,7 +41,7 @@ const navLinks = [
         { href: "/feed", label: "Browse Dishes" },
     ] 
   },
-  { href: "/about", label: "About" },
+  { href: "#", label: "Contact" },
 ];
 
 function NavLinks({ isMobile, onLinkClick }: { isMobile?: boolean, onLinkClick?: () => void }) {
