@@ -22,6 +22,7 @@
 //     );
 // }
 
+
 "use client";
 
 import { Card } from "@/components/ui/card";
@@ -64,7 +65,7 @@ export function AboutUsSection() {
 
         {/* Text Card */}
         <motion.div
-          className="flex flex-col justify-center h-96 lg:h-[500px]"
+          className="flex flex-col justify-center h-300 lg:h-[500px]"
           initial={{ opacity: 0, x: 50 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}

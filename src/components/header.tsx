@@ -1,4 +1,219 @@
 
+// "use client";
+
+// import Link from "next/link";
+// import { usePathname, useRouter } from "next/navigation";
+// import Logo from "./logo";
+// import { cn } from "@/lib/utils";
+// import { Button } from "./ui/button";
+// import { Search, ShoppingBag, Menu, ChevronDown, User, LogOut } from "lucide-react";
+// import { Badge } from "./ui/badge";
+// import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+// import { useState } from "react";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuTrigger,
+//   DropdownMenuSeparator,
+// } from "@/components/ui/dropdown-menu"
+// import { useCart } from "@/context/cart-context";
+// import { useUser } from "@/firebase";
+// import { getAuth, signOut } from "firebase/auth";
+// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+
+// const navLinks = [
+//   { href: "/", label: "Home" },
+//   { 
+//     href: "/feed", 
+//     label: "Menu", 
+//     hasDropdown: true, 
+//     dropdownItems: [
+//       { href: "/feed", label: "All Dishes" },
+//       { href: "/feed?filter=Trending", label: "Trending" },
+//       { href: "/feed?filter=Popular", label: "Popular" },
+//       { href: "/feed?filter=Latest", label: "Latest" },
+//     ]
+//   },
+//   { 
+//     href: "/upload", 
+//     label: "Shop", 
+//     isHot: true, 
+//     hasDropdown: true, 
+//     dropdownItems: [
+//         { href: "/upload", label: "Upload Dish" },
+//         { href: "/feed", label: "Browse Dishes" },
+//     ] 
+//   },
+//   { href: "/contact", label: "Contact" },
+// ];
+
+// function NavLinks({ isMobile, onLinkClick }: { isMobile?: boolean, onLinkClick?: () => void }) {
+//   const pathname = usePathname();
+//   const linkClass = cn(
+//     "transition-colors hover:text-primary font-semibold flex items-center gap-1",
+//     isMobile && "text-lg py-2 justify-between w-full"
+//   )
+
+//   return (
+//     <>
+//       {navLinks.map((link) => {
+//         const key = `${link.label}-${link.href}`;
+//         if (link.hasDropdown && link.dropdownItems) {
+//           return (
+//              <DropdownMenu key={key}>
+//               <DropdownMenuTrigger className={cn(linkClass, pathname.startsWith(link.href) ? "text-primary" : "text-muted-foreground", "outline-none")}>
+//                 {link.label} 
+//                 {link.isHot && <Badge variant="destructive" className="ml-1 border-none text-xs px-1.5 py-0.5 h-auto">HOT</Badge>}
+//                 <ChevronDown className="h-4 w-4" />
+//               </DropdownMenuTrigger>
+//               <DropdownMenuContent>
+//                 {link.dropdownItems.map(item => (
+//                   <DropdownMenuItem key={item.href} asChild><Link href={item.href} onClick={onLinkClick}>{item.label}</Link></DropdownMenuItem>
+//                 ))}
+//               </DropdownMenuContent>
+//             </DropdownMenu>
+//           )
+//         }
+        
+//         return (
+//           <div key={key} className="relative">
+//             <Link
+//               href={link.href}
+//               onClick={onLinkClick}
+//               className={cn(
+//                 linkClass,
+//                 pathname === link.href ? "text-primary" : "text-muted-foreground"
+//               )}
+//             >
+//               {link.label}
+//             </Link>
+//           </div>
+//         )
+//       })}
+//     </>
+//   );
+// }
+
+
+// export default function Header() {
+//   const [isSheetOpen, setIsSheetOpen] = useState(false);
+//   const { cartItems } = useCart();
+//   const { user, isUserLoading } = useUser();
+//   const router = useRouter();
+//   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+//   const handleLogout = async () => {
+//     const auth = getAuth();
+//     await signOut(auth);
+//     router.push('/');
+//   };
+
+
+//   return (
+//     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+//       <div className="container flex h-20 items-center px-4 lg:px-8">
+//         <Logo />
+//         <nav className="ml-10 hidden items-center space-x-6 text-sm font-medium md:flex">
+//           <NavLinks />
+//         </nav>
+//         <div className="ml-auto flex items-center gap-2 sm:gap-4">
+//           <Button variant="ghost" size="icon" className="hidden sm:inline-flex">
+//             <Search className="h-5 w-5" />
+//           </Button>
+//            <Button variant="ghost" size="icon" className="hidden sm:inline-flex relative" asChild>
+//             <Link href="/cart">
+//               <ShoppingBag className="h-5 w-5" />
+//               {totalItems > 0 && (
+//                 <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 justify-center p-0">{totalItems}</Badge>
+//               )}
+//             </Link>
+//           </Button>
+
+//           {!isUserLoading && (
+//             user ? (
+//               <DropdownMenu>
+//                 <DropdownMenuTrigger asChild>
+//                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+//                      <Avatar className="h-8 w-8">
+//                         {user.photoURL ? <AvatarImage src={user.photoURL} alt={user.displayName ?? 'User'} /> : <AvatarFallback>{user.email?.charAt(0).toUpperCase()}</AvatarFallback>}
+//                      </Avatar>
+//                   </Button>
+//                 </DropdownMenuTrigger>
+//                 <DropdownMenuContent align="end">
+//                   <DropdownMenuItem asChild>
+//                     <Link href={`/profile/${user.uid}`}>
+//                       <User className="mr-2 h-4 w-4" />
+//                       <span>My Profile</span>
+//                     </Link>
+//                   </DropdownMenuItem>
+//                   <DropdownMenuSeparator />
+//                   <DropdownMenuItem onClick={handleLogout}>
+//                     <LogOut className="mr-2 h-4 w-4" />
+//                     <span>Logout</span>
+//                   </DropdownMenuItem>
+//                 </DropdownMenuContent>
+//               </DropdownMenu>
+//             ) : (
+//                <Button asChild className="font-bold rounded-lg px-6 hidden sm:inline-flex bg-blue-500 hover:bg-blue-600 text-white">
+//                 <Link href="/login">
+//                   <User className="h-4 w-4 mr-2"/>
+//                   Login
+//                 </Link>
+//               </Button>
+//             )
+//           )}
+          
+
+//           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+//             <SheetTrigger asChild>
+//               <Button variant="ghost" size="icon" className="md:hidden">
+//                 <Menu className="h-6 w-6" />
+//                 <span className="sr-only">Open menu</span>
+//               </Button>
+//             </SheetTrigger>
+//             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-card p-0">
+//               <div className="p-4 flex flex-col h-full">
+//                 <Logo />
+//                 <nav className="mt-8 flex flex-col space-y-4">
+//                   <NavLinks isMobile onLinkClick={() => setIsSheetOpen(false)} />
+//                 </nav>
+//                  <div className="mt-auto flex flex-col gap-4">
+//                     <Button variant="outline">
+//                       <Search className="h-5 w-5 mr-2" />
+//                       Search
+//                     </Button>
+//                     <Button variant="outline" asChild>
+//                        <Link href="/cart" onClick={() => setIsSheetOpen(false)}>
+//                         <ShoppingBag className="h-5 w-5 mr-2" />
+//                         Cart ({totalItems})
+//                       </Link>
+//                     </Button>
+//                     {user ? (
+//                       <Button asChild className="font-bold rounded-lg w-full bg-blue-500 hover:bg-blue-600 text-white">
+//                         <Link href={`/profile/${user.uid}`} onClick={() => setIsSheetOpen(false)}>
+//                             <User className="h-4 w-4 mr-2"/>
+//                             My Profile
+//                         </Link>
+//                     </Button>
+//                     ) : (
+//                        <Button asChild className="font-bold rounded-lg w-full bg-blue-500 hover:bg-blue-600 text-white">
+//                         <Link href="/login" onClick={() => setIsSheetOpen(false)}>
+//                             <User className="h-4 w-4 mr-2"/>
+//                             Login
+//                         </Link>
+//                     </Button>
+//                     )}
+//                   </div>
+//               </div>
+//             </SheetContent>
+//           </Sheet>
+//         </div>
+//       </div>
+//     </header>
+//   );
+// }
 
 "use client";
 
@@ -9,7 +224,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { Search, ShoppingBag, Menu, ChevronDown, User, LogOut } from "lucide-react";
 import { Badge } from "./ui/badge";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useState } from "react";
 import {
   DropdownMenu,
@@ -17,12 +233,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import { useCart } from "@/context/cart-context";
 import { useUser } from "@/firebase";
 import { getAuth, signOut } from "firebase/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -43,8 +258,8 @@ const navLinks = [
     isHot: true, 
     hasDropdown: true, 
     dropdownItems: [
-        { href: "/upload", label: "Upload Dish" },
-        { href: "/feed", label: "Browse Dishes" },
+      { href: "/upload", label: "Upload Dish" },
+      { href: "/feed", label: "Browse Dishes" },
     ] 
   },
   { href: "/contact", label: "Contact" },
@@ -55,7 +270,7 @@ function NavLinks({ isMobile, onLinkClick }: { isMobile?: boolean, onLinkClick?:
   const linkClass = cn(
     "transition-colors hover:text-primary font-semibold flex items-center gap-1",
     isMobile && "text-lg py-2 justify-between w-full"
-  )
+  );
 
   return (
     <>
@@ -63,21 +278,40 @@ function NavLinks({ isMobile, onLinkClick }: { isMobile?: boolean, onLinkClick?:
         const key = `${link.label}-${link.href}`;
         if (link.hasDropdown && link.dropdownItems) {
           return (
-             <DropdownMenu key={key}>
-              <DropdownMenuTrigger className={cn(linkClass, pathname.startsWith(link.href) ? "text-primary" : "text-muted-foreground", "outline-none")}>
-                {link.label} 
-                {link.isHot && <Badge variant="destructive" className="ml-1 border-none text-xs px-1.5 py-0.5 h-auto">HOT</Badge>}
+            <DropdownMenu key={key}>
+              <DropdownMenuTrigger
+                className={cn(
+                  linkClass,
+                  pathname.startsWith(link.href)
+                    ? "text-primary"
+                    : "text-muted-foreground",
+                  "outline-none"
+                )}
+              >
+                {link.label}
+                {link.isHot && (
+                  <Badge
+                    variant="destructive"
+                    className="ml-1 border-none text-xs px-1.5 py-0.5 h-auto"
+                  >
+                    HOT
+                  </Badge>
+                )}
                 <ChevronDown className="h-4 w-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                {link.dropdownItems.map(item => (
-                  <DropdownMenuItem key={item.href} asChild><Link href={item.href} onClick={onLinkClick}>{item.label}</Link></DropdownMenuItem>
+                {link.dropdownItems.map((item) => (
+                  <DropdownMenuItem key={item.href} asChild>
+                    <Link href={item.href} onClick={onLinkClick}>
+                      {item.label}
+                    </Link>
+                  </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-          )
+          );
         }
-        
+
         return (
           <div key={key} className="relative">
             <Link
@@ -85,18 +319,19 @@ function NavLinks({ isMobile, onLinkClick }: { isMobile?: boolean, onLinkClick?:
               onClick={onLinkClick}
               className={cn(
                 linkClass,
-                pathname === link.href ? "text-primary" : "text-muted-foreground"
+                pathname === link.href
+                  ? "text-primary"
+                  : "text-muted-foreground"
               )}
             >
               {link.label}
             </Link>
           </div>
-        )
+        );
       })}
     </>
   );
 }
-
 
 export default function Header() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -108,9 +343,8 @@ export default function Header() {
   const handleLogout = async () => {
     const auth = getAuth();
     await signOut(auth);
-    router.push('/');
+    router.push("/");
   };
-
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -123,23 +357,35 @@ export default function Header() {
           <Button variant="ghost" size="icon" className="hidden sm:inline-flex">
             <Search className="h-5 w-5" />
           </Button>
-           <Button variant="ghost" size="icon" className="hidden sm:inline-flex relative" asChild>
+
+          <Button variant="ghost" size="icon" className="hidden sm:inline-flex relative" asChild>
             <Link href="/cart">
               <ShoppingBag className="h-5 w-5" />
               {totalItems > 0 && (
-                <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 justify-center p-0">{totalItems}</Badge>
+                <Badge
+                  variant="destructive"
+                  className="absolute -top-2 -right-2 h-5 w-5 justify-center p-0"
+                >
+                  {totalItems}
+                </Badge>
               )}
             </Link>
           </Button>
 
-          {!isUserLoading && (
-            user ? (
+          {!isUserLoading &&
+            (user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                     <Avatar className="h-8 w-8">
-                        {user.photoURL ? <AvatarImage src={user.photoURL} alt={user.displayName ?? 'User'} /> : <AvatarFallback>{user.email?.charAt(0).toUpperCase()}</AvatarFallback>}
-                     </Avatar>
+                    <Avatar className="h-8 w-8">
+                      {user.photoURL ? (
+                        <AvatarImage src={user.photoURL} alt={user.displayName ?? "User"} />
+                      ) : (
+                        <AvatarFallback>
+                          {user.email?.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      )}
+                    </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -157,15 +403,16 @@ export default function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-               <Button asChild className="font-bold rounded-lg px-6 hidden sm:inline-flex bg-blue-500 hover:bg-blue-600 text-white">
+              <Button
+                asChild
+                className="font-bold rounded-lg px-6 hidden sm:inline-flex bg-blue-500 hover:bg-blue-600 text-white"
+              >
                 <Link href="/login">
-                  <User className="h-4 w-4 mr-2"/>
+                  <User className="h-4 w-4 mr-2" />
                   Login
                 </Link>
               </Button>
-            )
-          )}
-          
+            ))}
 
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
@@ -174,39 +421,51 @@ export default function Header() {
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
+
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-card p-0">
+              <SheetTitle>
+                <VisuallyHidden>Navigation Menu</VisuallyHidden>
+              </SheetTitle>
+
               <div className="p-4 flex flex-col h-full">
                 <Logo />
                 <nav className="mt-8 flex flex-col space-y-4">
                   <NavLinks isMobile onLinkClick={() => setIsSheetOpen(false)} />
                 </nav>
-                 <div className="mt-auto flex flex-col gap-4">
-                    <Button variant="outline">
-                      <Search className="h-5 w-5 mr-2" />
-                      Search
-                    </Button>
-                    <Button variant="outline" asChild>
-                       <Link href="/cart" onClick={() => setIsSheetOpen(false)}>
-                        <ShoppingBag className="h-5 w-5 mr-2" />
-                        Cart ({totalItems})
+
+                <div className="mt-auto flex flex-col gap-4">
+                  <Button variant="outline">
+                    <Search className="h-5 w-5 mr-2" />
+                    Search
+                  </Button>
+                  <Button variant="outline" asChild>
+                    <Link href="/cart" onClick={() => setIsSheetOpen(false)}>
+                      <ShoppingBag className="h-5 w-5 mr-2" />
+                      Cart ({totalItems})
+                    </Link>
+                  </Button>
+                  {user ? (
+                    <Button
+                      asChild
+                      className="font-bold rounded-lg w-full bg-blue-500 hover:bg-blue-600 text-white"
+                    >
+                      <Link href={`/profile/${user.uid}`} onClick={() => setIsSheetOpen(false)}>
+                        <User className="h-4 w-4 mr-2" />
+                        My Profile
                       </Link>
                     </Button>
-                    {user ? (
-                      <Button asChild className="font-bold rounded-lg w-full bg-blue-500 hover:bg-blue-600 text-white">
-                        <Link href={`/profile/${user.uid}`} onClick={() => setIsSheetOpen(false)}>
-                            <User className="h-4 w-4 mr-2"/>
-                            My Profile
-                        </Link>
+                  ) : (
+                    <Button
+                      asChild
+                      className="font-bold rounded-lg w-full bg-blue-500 hover:bg-blue-600 text-white"
+                    >
+                      <Link href="/login" onClick={() => setIsSheetOpen(false)}>
+                        <User className="h-4 w-4 mr-2" />
+                        Login
+                      </Link>
                     </Button>
-                    ) : (
-                       <Button asChild className="font-bold rounded-lg w-full bg-blue-500 hover:bg-blue-600 text-white">
-                        <Link href="/login" onClick={() => setIsSheetOpen(false)}>
-                            <User className="h-4 w-4 mr-2"/>
-                            Login
-                        </Link>
-                    </Button>
-                    )}
-                  </div>
+                  )}
+                </div>
               </div>
             </SheetContent>
           </Sheet>
@@ -215,301 +474,3 @@ export default function Header() {
     </header>
   );
 }
-
-
-// "use client";
-
-// import Link from "next/link";
-// import { usePathname, useRouter } from "next/navigation";
-// import Logo from "./logo";
-// import { cn } from "@/lib/utils";
-// import { Button } from "./ui/button";
-// import {
-//   Search,
-//   ShoppingBag,
-//   Menu,
-//   ChevronDown,
-//   User,
-//   LogOut,
-// } from "lucide-react";
-// import { Badge } from "./ui/badge";
-// import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-// import { useState } from "react";
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuTrigger,
-//   DropdownMenuSeparator,
-// } from "@/components/ui/dropdown-menu";
-// import { useCart } from "@/context/cart-context";
-// import { useUser } from "@/firebase";
-// import { getAuth, signOut } from "firebase/auth";
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-// const navLinks = [
-//   { href: "/", label: "Home" },
-//   {
-//     href: "/feed",
-//     label: "Menu",
-//     hasDropdown: true,
-//     dropdownItems: [
-//       { href: "/feed", label: "All Dishes" },
-//       { href: "/feed?filter=Trending", label: "Trending" },
-//       { href: "/feed?filter=Popular", label: "Popular" },
-//       { href: "/feed?filter=Latest", label: "Latest" },
-//     ],
-//   },
-//   {
-//     href: "/upload",
-//     label: "Shop",
-//     isHot: true,
-//     hasDropdown: true,
-//     dropdownItems: [
-//       { href: "/upload", label: "Upload Dish" },
-//       { href: "/feed", label: "Browse Dishes" },
-//     ],
-//   },
-//   { href: "/contact", label: "Contact" },
-// ];
-
-// function NavLinks({
-//   isMobile,
-//   onLinkClick,
-// }: {
-//   isMobile?: boolean;
-//   onLinkClick?: () => void;
-// }) {
-//   const pathname = usePathname();
-//   const linkClass = cn(
-//     "flex items-center gap-1 font-medium transition-colors duration-200 hover:text-indigo-600",
-//     isMobile && "text-lg py-2 justify-between w-full"
-//   );
-
-//   return (
-//     <>
-//       {navLinks.map((link) => {
-//         const key = `${link.label}-${link.href}`;
-//         if (link.hasDropdown && link.dropdownItems) {
-//           return (
-//             <DropdownMenu key={key}>
-//               <DropdownMenuTrigger
-//                 className={cn(
-//                   linkClass,
-//                   pathname.startsWith(link.href)
-//                     ? "text-indigo-600"
-//                     : "text-gray-600",
-//                   "outline-none"
-//                 )}
-//               >
-//                 {link.label}
-//                 {link.isHot && (
-//                   <Badge className="ml-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-[10px] px-1.5 py-0.5 rounded-md shadow-sm">
-//                     HOT
-//                   </Badge>
-//                 )}
-//                 <ChevronDown className="h-4 w-4" />
-//               </DropdownMenuTrigger>
-//               <DropdownMenuContent className="bg-white shadow-xl rounded-xl border p-1">
-//                 {link.dropdownItems.map((item) => (
-//                   <DropdownMenuItem
-//                     key={item.href}
-//                     asChild
-//                     className="hover:bg-indigo-50 rounded-md px-3 py-2"
-//                   >
-//                     <Link href={item.href} onClick={onLinkClick}>
-//                       {item.label}
-//                     </Link>
-//                   </DropdownMenuItem>
-//                 ))}
-//               </DropdownMenuContent>
-//             </DropdownMenu>
-//           );
-//         }
-
-//         return (
-//           <Link
-//             key={key}
-//             href={link.href}
-//             onClick={onLinkClick}
-//             className={cn(
-//               linkClass,
-//               pathname === link.href ? "text-indigo-600" : "text-gray-600"
-//             )}
-//           >
-//             {link.label}
-//           </Link>
-//         );
-//       })}
-//     </>
-//   );
-// }
-
-// export default function Header() {
-//   const [isSheetOpen, setIsSheetOpen] = useState(false);
-//   const { cartItems } = useCart();
-//   const { user, isUserLoading } = useUser();
-//   const router = useRouter();
-//   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-
-//   const handleLogout = async () => {
-//     const auth = getAuth();
-//     await signOut(auth);
-//     router.push("/");
-//   };
-
-//   return (
-//     <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-lg shadow-sm">
-//       <div className="container flex h-20 items-center px-4 lg:px-8">
-//         {/* Logo */}
-//         <Logo />
-
-//         {/* Desktop Nav */}
-//         <nav className="ml-10 hidden items-center space-x-8 md:flex">
-//           <NavLinks />
-//         </nav>
-
-//         {/* Right Section */}
-//         <div className="ml-auto flex items-center gap-3 sm:gap-5">
-//           {/* Search */}
-//           <Button
-//             variant="ghost"
-//             size="icon"
-//             className="hidden sm:flex hover:bg-indigo-50"
-//           >
-//             <Search className="h-5 w-5 text-gray-600" />
-//           </Button>
-
-//           {/* Cart */}
-//           <Button
-//             variant="ghost"
-//             size="icon"
-//             className="relative hover:bg-indigo-50"
-//             asChild
-//           >
-//             <Link href="/cart">
-//               <ShoppingBag className="h-5 w-5 text-gray-600" />
-//               {totalItems > 0 && (
-//                 <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs shadow">
-//                   {totalItems}
-//                 </Badge>
-//               )}
-//             </Link>
-//           </Button>
-
-//           {/* Auth */}
-//           {!isUserLoading &&
-//             (user ? (
-//               <DropdownMenu>
-//                 <DropdownMenuTrigger asChild>
-//                   <Button
-//                     variant="ghost"
-//                     className="relative h-10 w-10 rounded-full hover:bg-indigo-50"
-//                   >
-//                     <Avatar className="h-10 w-10">
-//                       {user.photoURL ? (
-//                         <AvatarImage
-//                           src={user.photoURL}
-//                           alt={user.displayName ?? "User"}
-//                         />
-//                       ) : (
-//                         <AvatarFallback className="bg-indigo-100 text-indigo-600 font-semibold">
-//                           {user.email?.charAt(0).toUpperCase()}
-//                         </AvatarFallback>
-//                       )}
-//                     </Avatar>
-//                   </Button>
-//                 </DropdownMenuTrigger>
-//                 <DropdownMenuContent
-//                   align="end"
-//                   className="bg-white shadow-xl rounded-xl border p-2"
-//                 >
-//                   <DropdownMenuItem asChild>
-//                     <Link href={`/profile/${user.uid}`}>
-//                       <User className="mr-2 h-4 w-4 text-gray-600" />
-//                       My Profile
-//                     </Link>
-//                   </DropdownMenuItem>
-//                   <DropdownMenuSeparator />
-//                   <DropdownMenuItem
-//                     onClick={handleLogout}
-//                     className="text-red-500 hover:text-red-600 hover:bg-red-50"
-//                   >
-//                     <LogOut className="mr-2 h-4 w-4" />
-//                     Logout
-//                   </DropdownMenuItem>
-//                 </DropdownMenuContent>
-//               </DropdownMenu>
-//             ) : (
-//               <Button
-//                 asChild
-//                 className="hidden sm:inline-flex bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold px-6 rounded-lg shadow hover:from-indigo-700 hover:to-blue-700"
-//               >
-//                 <Link href="/login">
-//                   <User className="h-4 w-4 mr-2" />
-//                   Login
-//                 </Link>
-//               </Button>
-//             ))}
-
-//           {/* Mobile Menu */}
-//           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-//             <SheetTrigger asChild>
-//               <Button
-//                 variant="ghost"
-//                 size="icon"
-//                 className="md:hidden hover:bg-indigo-50"
-//               >
-//                 <Menu className="h-6 w-6 text-gray-700" />
-//               </Button>
-//             </SheetTrigger>
-//             <SheetContent side="right" className="w-[300px] sm:w-[400px] p-0">
-//               <div className="p-6 flex flex-col h-full">
-//                 <Logo />
-//                 <nav className="mt-8 flex flex-col space-y-3">
-//                   <NavLinks isMobile onLinkClick={() => setIsSheetOpen(false)} />
-//                 </nav>
-//                 <div className="mt-auto flex flex-col gap-3">
-//                   <Button variant="outline" className="w-full">
-//                     <Search className="h-5 w-5 mr-2 text-gray-600" />
-//                     Search
-//                   </Button>
-//                   <Button variant="outline" asChild className="w-full">
-//                     <Link href="/cart" onClick={() => setIsSheetOpen(false)}>
-//                       <ShoppingBag className="h-5 w-5 mr-2 text-gray-600" />
-//                       Cart ({totalItems})
-//                     </Link>
-//                   </Button>
-//                   {user ? (
-//                     <Button
-//                       asChild
-//                       className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold rounded-lg shadow hover:from-indigo-700 hover:to-blue-700"
-//                     >
-//                       <Link
-//                         href={`/profile/${user.uid}`}
-//                         onClick={() => setIsSheetOpen(false)}
-//                       >
-//                         <User className="h-4 w-4 mr-2" />
-//                         My Profile
-//                       </Link>
-//                     </Button>
-//                   ) : (
-//                     <Button
-//                       asChild
-//                       className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold rounded-lg shadow hover:from-indigo-700 hover:to-blue-700"
-//                     >
-//                       <Link href="/login" onClick={() => setIsSheetOpen(false)}>
-//                         <User className="h-4 w-4 mr-2" />
-//                         Login
-//                       </Link>
-//                     </Button>
-//                   )}
-//                 </div>
-//               </div>
-//             </SheetContent>
-//           </Sheet>
-//         </div>
-//       </div>
-//     </header>
-//   );
-// }

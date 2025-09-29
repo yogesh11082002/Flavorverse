@@ -95,7 +95,7 @@ export function PromoBanner() {
 
     return (
         <section className="w-full mt-8 lg:mt-0">
-            <Card className="relative rounded-3xl overflow-hidden h-[400px] lg:h-[1230px] shadow-xl">
+            <Card className="relative rounded-3xl overflow-hidden h-[600px] lg:h-[1230px] shadow-xl">
                 {promoImage ? (
                     <Image
                         src={promoImage.imageUrl}

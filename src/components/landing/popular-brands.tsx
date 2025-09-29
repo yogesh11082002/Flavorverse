@@ -11,7 +11,7 @@ export function PopularBrands() {
     { name: 'Carls Jr', logo: PlaceHolderImages.find(p => p.id === 'brand-carlsjr') },
     { name: 'Folgers', logo: PlaceHolderImages.find(p => p.id === 'brand-folgers') },
     { name: 'Fritos', logo: PlaceHolderImages.find(p => p.id === 'brand-fritos') },
-    { name: 'Hardees', logo: PlaceHolderImages.find(p => p.id === 'brand-hardees') },
+   
    
   ];
   return (
