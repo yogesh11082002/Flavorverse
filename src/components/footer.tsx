@@ -170,7 +170,6 @@ const footerLinks = {
   follow: [
     { name: "Facebook", href: "https://www.facebook.com/yogesh.sengar.589/", icon: <Facebook /> },
     { name: "Twitter", href: "https://twitter.com/YogeshT12554000", icon: <Twitter /> },
-    { name: "LinkedIn", href: "https://www.linkedin.com/in/yogesh-sengar-982465232/", icon: <Linkedin /> },
     { name: "Instagram", href: "https://www.instagram.com/yogesh_thakur_1108", icon: <Instagram /> },
   ],
 };
@@ -191,7 +190,7 @@ export default function Footer() {
       <div className="container mx-auto px-6 py-20 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
           {/* Logo & Info */}
-          <div className="lg:col-span-2 flex flex-col justify-between pr-4  -mt-20">
+          <div className="lg:col-span-2 flex flex-col justify-between pr-4  -mt-30 sm:-mt-20">
             <Image
               src={blacklogo}
               alt="FlavorVerse Logo"
@@ -199,7 +198,7 @@ export default function Footer() {
               height={100}
               className="mb-6"
             />
-            <p className="text-gray-300 text-base -mt-20 mb-4">
+            <p className="text-gray-300 text-base -mt-32 sm:-mt-28 mb-4">
               Fresh meals delivered to your door. Pizzas, burgers, healthy meals — all at your fingertips.
             </p>
             <div className="text-gray-400 text-sm space-y-1">
