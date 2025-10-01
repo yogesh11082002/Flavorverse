@@ -190,7 +190,7 @@ export default function Footer() {
       <div className="container mx-auto px-6 py-20 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
           {/* Logo & Info */}
-          <div className="lg:col-span-2 flex flex-col justify-between pr-4  -mt-30 sm:-mt-20">
+          <div className="lg:col-span-2 flex flex-col justify-between pr-4  -mt-36 sm:-mt-20">
             <Image
               src={blacklogo}
               alt="FlavorVerse Logo"
