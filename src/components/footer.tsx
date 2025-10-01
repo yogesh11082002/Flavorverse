@@ -276,10 +276,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Yogesh Thakur Footer */}
-        <div className="mt-6 text-center text-sm text-gray-100">
-          Copyright @ Yogesh Thakur || All rights reserved
-        </div>
+      
       </div>
     </footer>
   );
