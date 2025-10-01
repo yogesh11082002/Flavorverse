@@ -37,20 +37,41 @@
 //   );
 // }
 
+// import Image from "next/image";
+// import logo from "./logo.png"; // import the PNG
+
+// export default function Logo() {
+//   return (
+//     <div className="flex items-center gap-2">
+//       <Image 
+//         src={logo} 
+//         alt="FlavorVerse Logo" 
+//         width={170} 
+//         height={80} 
+//         priority
+//       />
+     
+//     </div>
+//   );
+// }
 import Image from "next/image";
+import Link from "next/link";
 import logo from "./logo.png"; // import the PNG
 
 export default function Logo() {
   return (
     <div className="flex items-center gap-2">
-      <Image 
-        src={logo} 
-        alt="FlavorVerse Logo" 
-        width={170} 
-        height={80} 
-        priority
-      />
-     
+      <Link href="/">
+        <Image 
+          src={logo} 
+          alt="FlavorVerse Logo" 
+          width={170} 
+          height={80} 
+          priority
+          className="cursor-pointer"
+        />
+      </Link>
     </div>
   );
 }
+

@@ -190,18 +190,22 @@ export default function Footer() {
       <div className="container mx-auto px-6 py-20 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
           {/* Logo & Info */}
-          <div className="lg:col-span-2 flex flex-col justify-between pr-4  -mt-36 sm:-mt-20">
-            <Image
-              src={blacklogo}
-              alt="FlavorVerse Logo"
-              width={200}
-              height={100}
-              className="mb-6"
-            />
-            <p className="text-gray-300 text-base -mt-24 sm:-mt-28 mb-4">
+          <div className="lg:col-span-2 flex flex-col justify-between pr-4 -ml-5 -mt-36 sm:-mt-20">
+            <Link href="/">
+    
+      <Image
+        src={blacklogo}
+        alt="FlavorVerse Logo"
+        width={200}
+        height={100}
+        className="mb-6 cursor-pointer"
+      />
+   
+  </Link>
+            <p className="text-gray-300 text-base ml-5 -mt-24  sm:-mt-28 mb-4">
               Fresh meals delivered to your door. Pizzas, burgers, healthy meals — all at your fingertips.
             </p>
-            <div className="text-gray-400 text-sm space-y-1">
+            <div className="text-gray-400 ml-5 text-sm space-y-1">
               <p>Eco Food Court</p>
               <p>FlavorVerse Pvt Ltd</p>
             </div>
