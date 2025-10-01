@@ -134,46 +134,148 @@
 //   );
 // }
 
+// "use client";
+
+// import Image from 'next/image';
+// import Link from 'next/link';
+// import { Card } from '@/components/ui/card';
+// import { PlaceHolderImages } from '@/lib/placeholder-images';
+// import { motion } from 'framer-motion';
+
+// const categories = [
+//     { name: 'Deserts', items: 7, imageId: 'cat-deserts', hint: 'dessert' },
+//     { name: 'Cakes', items: 21, imageId: 'cat-cakes', hint: 'cake slice' },
+//     { name: 'Brownies', items: 23, imageId: 'cat-brownies', hint: 'brownie' },
+//     { name: 'Pizzas', items: 16, imageId: 'cat-pizzas', hint: 'pizza' },
+//     { name: 'Burgers', items: 15, imageId: 'cat-burgers', hint: 'burger' },
+//     { name: 'Drinks', items: 12, imageId: 'cat-drinks', hint: 'cocktail' },
+//     { name: 'Wrap', items: 14, imageId: 'cat-wrap', hint: 'wrap sandwich' },
+//     { name: 'Pasta', items: 17, imageId: 'cat-pasta', hint: 'pasta bowl' },
+//     { name: 'Sandwich', items: 24, imageId: 'cat-sandwich', hint: 'sandwich' },
+//     { name: 'Fruits', items: 30, imageId: 'cat-fruits', hint: 'fruit bowl' },
+// ];
+
+// const containerVariants = {
+//   hidden: {},
+//   visible: {
+//     transition: {
+//       staggerChildren: 0.1
+//     }
+//   }
+// };
+
+// const cardVariants = {
+//   hidden: { opacity: 0, y: 50, scale: 0.8 },
+//   visible: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 150 } }
+// };
+
+// export function TopCategories() {
+//   return (
+//     <div>
+//       <div className="flex items-center gap-2 mb-6">
+//         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+//           <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path>
+//         </svg>
+//         <h2 className="font-headline text-3xl font-bold">Top Categories</h2>
+//       </div>
+
+//       <motion.div
+//         className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6"
+//         variants={containerVariants}
+//         initial="hidden"
+//         animate="visible"
+//       >
+//         {categories.map((category) => {
+//           const image = PlaceHolderImages.find(p => p.id === category.imageId);
+//           return (
+//             <motion.div
+//               key={category.name}
+//               variants={cardVariants}
+//               whileHover={{ scale: 1.08, y: -5, boxShadow: "0px 15px 25px rgba(255, 184, 0, 0.4)" }}
+//               className="cursor-pointer"
+//             >
+//               <Card className="p-4 flex flex-col items-center justify-center text-center bg-amber-400 rounded-xl transition-all duration-300">
+//                 <motion.div
+//                   whileHover={{ rotate: [0, 5, -5, 0], y: [0, -5, 0], transition: { duration: 0.6, repeat: Infinity } }}
+//                   className="relative w-24 h-24 mb-3 rounded-full overflow-hidden border-2 border-white/20"
+//                 >
+//                   {image && (
+//                     <Image
+//                       src={image.imageUrl}
+//                       alt={category.name}
+//                       fill
+//                       className="object-cover"
+//                       data-ai-hint={category.hint}
+//                     />
+//                   )}
+//                 </motion.div>
+//                 <h3 className="font-semibold text-sm">{category.name}</h3>
+//                 <p className="text-xs text-neutral-900">Items ({category.items})</p>
+//               </Card>
+//             </motion.div>
+//           )
+//         })}
+//       </motion.div>
+//     </div>
+//   );
+// }
+
 "use client";
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { Card } from '@/components/ui/card';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { motion } from 'framer-motion';
+import Image from "next/image";
+import Link from "next/link";
+import { Card } from "@/components/ui/card";
+import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { motion } from "framer-motion";
 
 const categories = [
-    { name: 'Deserts', items: 7, imageId: 'cat-deserts', hint: 'dessert' },
-    { name: 'Cakes', items: 21, imageId: 'cat-cakes', hint: 'cake slice' },
-    { name: 'Brownies', items: 23, imageId: 'cat-brownies', hint: 'brownie' },
-    { name: 'Pizzas', items: 16, imageId: 'cat-pizzas', hint: 'pizza' },
-    { name: 'Burgers', items: 15, imageId: 'cat-burgers', hint: 'burger' },
-    { name: 'Drinks', items: 12, imageId: 'cat-drinks', hint: 'cocktail' },
-    { name: 'Wrap', items: 14, imageId: 'cat-wrap', hint: 'wrap sandwich' },
-    { name: 'Pasta', items: 17, imageId: 'cat-pasta', hint: 'pasta bowl' },
-    { name: 'Sandwich', items: 24, imageId: 'cat-sandwich', hint: 'sandwich' },
-    { name: 'Fruits', items: 30, imageId: 'cat-fruits', hint: 'fruit bowl' },
+  { name: "Deserts", items: 7, imageId: "cat-deserts", hint: "dessert" },
+  { name: "Cakes", items: 21, imageId: "cat-cakes", hint: "cake slice" },
+  { name: "Brownies", items: 23, imageId: "cat-brownies", hint: "brownie" },
+  { name: "Pizzas", items: 16, imageId: "cat-pizzas", hint: "pizza" },
+  { name: "Burgers", items: 15, imageId: "cat-burgers", hint: "burger" },
+  { name: "Drinks", items: 12, imageId: "cat-drinks", hint: "cocktail" },
+  { name: "Wrap", items: 14, imageId: "cat-wrap", hint: "wrap sandwich" },
+  { name: "Pasta", items: 17, imageId: "cat-pasta", hint: "pasta bowl" },
+  { name: "Sandwich", items: 24, imageId: "cat-sandwich", hint: "sandwich" },
+  { name: "Fruits", items: 30, imageId: "cat-fruits", hint: "fruit bowl" },
 ];
 
 const containerVariants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.1
-    }
-  }
+      staggerChildren: 0.1,
+    },
+  },
 };
 
 const cardVariants = {
   hidden: { opacity: 0, y: 50, scale: 0.8 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 150 } }
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: "spring", stiffness: 150 },
+  },
 };
 
 export function TopCategories() {
   return (
     <div>
       <div className="flex items-center gap-2 mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="h-6 w-6"
+        >
           <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path>
         </svg>
         <h2 className="font-headline text-3xl font-bold">Top Categories</h2>
@@ -186,34 +288,44 @@ export function TopCategories() {
         animate="visible"
       >
         {categories.map((category) => {
-          const image = PlaceHolderImages.find(p => p.id === category.imageId);
+          const image = PlaceHolderImages.find((p) => p.id === category.imageId);
+
           return (
-            <motion.div
-              key={category.name}
-              variants={cardVariants}
-              whileHover={{ scale: 1.08, y: -5, boxShadow: "0px 15px 25px rgba(255, 184, 0, 0.4)" }}
-              className="cursor-pointer"
-            >
-              <Card className="p-4 flex flex-col items-center justify-center text-center bg-amber-400 rounded-xl transition-all duration-300">
-                <motion.div
-                  whileHover={{ rotate: [0, 5, -5, 0], y: [0, -5, 0], transition: { duration: 0.6, repeat: Infinity } }}
-                  className="relative w-24 h-24 mb-3 rounded-full overflow-hidden border-2 border-white/20"
-                >
-                  {image && (
-                    <Image
-                      src={image.imageUrl}
-                      alt={category.name}
-                      fill
-                      className="object-cover"
-                      data-ai-hint={category.hint}
-                    />
-                  )}
-                </motion.div>
-                <h3 className="font-semibold text-sm">{category.name}</h3>
-                <p className="text-xs text-neutral-900">Items ({category.items})</p>
-              </Card>
-            </motion.div>
-          )
+            <Link key={category.name} href="/feed">
+              <motion.div
+                variants={cardVariants}
+                whileHover={{
+                  scale: 1.08,
+                  y: -5,
+                  boxShadow: "0px 15px 25px rgba(255, 184, 0, 0.4)",
+                }}
+                className="cursor-pointer"
+              >
+                <Card className="p-4 flex flex-col items-center justify-center text-center bg-amber-400 rounded-xl transition-all duration-300">
+                  <motion.div
+                    whileHover={{
+                      rotate: [0, 5, -5, 0],
+                      y: [0, -5, 0],
+                      transition: { duration: 0.6, repeat: Infinity },
+                    }}
+                    className="relative w-24 h-24 mb-3 rounded-full overflow-hidden border-2 border-white/20"
+                  >
+                    {image && (
+                      <Image
+                        src={image.imageUrl}
+                        alt={category.name}
+                        fill
+                        className="object-cover"
+                        data-ai-hint={category.hint}
+                      />
+                    )}
+                  </motion.div>
+                  <h3 className="font-semibold text-sm">{category.name}</h3>
+                  <p className="text-xs text-neutral-900">Items ({category.items})</p>
+                </Card>
+              </motion.div>
+            </Link>
+          );
         })}
       </motion.div>
     </div>
