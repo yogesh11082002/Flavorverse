@@ -198,7 +198,7 @@ export default function Footer() {
               height={100}
               className="mb-6"
             />
-            <p className="text-gray-300 text-base -mt-32 sm:-mt-28 mb-4">
+            <p className="text-gray-300 text-base -mt-24 sm:-mt-28 mb-4">
               Fresh meals delivered to your door. Pizzas, burgers, healthy meals — all at your fingertips.
             </p>
             <div className="text-gray-400 text-sm space-y-1">
