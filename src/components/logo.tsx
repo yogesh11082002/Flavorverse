@@ -66,7 +66,7 @@ export default function Logo() {
           src={logo} 
           alt="FlavorVerse Logo" 
           width={170} 
-          height={80} 
+          height={90} 
           priority
           className="cursor-pointer"
         />

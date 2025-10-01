@@ -202,7 +202,7 @@ export default function Footer() {
       />
    
   </Link>
-            <p className="text-gray-300 text-base ml-5 -mt-24  sm:-mt-28 mb-4">
+            <p className="text-gray-300 text-base ml-5 -mt-20  sm:-mt-28 mb-4">
               Fresh meals delivered to your door. Pizzas, burgers, healthy meals — all at your fingertips.
             </p>
             <div className="text-gray-400 ml-5 text-sm space-y-1">
